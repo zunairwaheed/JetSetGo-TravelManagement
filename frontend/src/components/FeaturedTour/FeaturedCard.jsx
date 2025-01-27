@@ -1,0 +1,113 @@
+import React, { useRef } from "react";
+import FeaturedData from "./FeaturedData"
+import { FaArrowRight, FaStar } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+const FeaturedCard = () => {
+  const sliderRef = useRef(null);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
+  return (
+    <div className="py-10 mx-10 md:mx-20 lg:mx-36 xl:mx-[280px]">
+      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-center">
+        Featured <span className="text-[#FA7436]">Tours</span>
+      </h1>
+      <p className="text-xs text-center px-8 md:px-48 lg:px-56 xl:px-72 2xl:px-80 pt-3 pb-7">
+        Plan your perfect vacation with our travel agency. Choose among
+        hundreds of all-inclusive offers!
+      </p>
+      <div className="mt-3 pb-3 gap-2 flex justify-end">
+        {/* Back Button */}
+        <button
+          className="bg-gray-200 active:bg-[#FC9A73] text-[#FA7436] active:text-white rounded-full flex items-center justify-center w-6 h-6 md:w-8 md:h-8 lg:w-9 lg:h-9 xl:w-10 xl:h-10 rotate-180"
+          onClick={() => sliderRef.current.slickPrev()}
+        >
+          <FaArrowRight className="size-4 lg:size-5" />
+        </button>
+        {/* Next Button */}
+        <button
+          className="bg-[#FA7436] active:bg-[#FEDCCC] text-white active:text-[#FA7436] rounded-full flex items-center justify-center w-6 h-6 md:w-8 md:h-8 lg:w-9 lg:h-9 xl:w-10 xl:h-10"
+          onClick={() => sliderRef.current.slickNext()}
+        >
+          <FaArrowRight className="size-4 lg:size-5" />
+        </button>
+      </div>
+      <div>
+
+        <Slider {...settings} ref={sliderRef}>
+          {FeaturedData.map((item) => (
+            <div key={item.id}>
+              <div className="w-60 h-auto xl:w-72 border-2 rounded-xl bg-white pb-2 mx-auto">
+                <img
+                  className="w-72 h-60 object-cover rounded-lg"
+                  src={item.imgUrl}
+                  alt={item.title}
+                />
+                <div className="flex justify-between py-2 px-2">
+                  <div className="flex items-center">
+                    <FaLocationDot color="#FA7436" />
+                    <p className="font-bold pl-1">{item.title}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <FaStar color="#FA7436" />
+                    <p className="pl-1 text-sm">{item.rating}</p>
+                  </div>
+                </div>
+                <div className="flex justify-between px-2">
+                  <p className="text-sm">{item.desc}</p>
+                </div>
+                <div className="flex justify-between py-2 px-2">
+                  <div className="flex">
+                    <p className="font-bold text-[#FA7436]">{item.price}</p>
+                    <p className="pt-1 text-sm">{item.person}</p>
+                  </div>
+                  <div>
+                    <button className="px-1 py-1 text-sm lg:font-bold bg-[#FA7436] text-white rounded active:bg-[#FEDCCC] active:text-[#FA7436]">{item.Book}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </div>
+  );
+};
+
+export default FeaturedCard;
