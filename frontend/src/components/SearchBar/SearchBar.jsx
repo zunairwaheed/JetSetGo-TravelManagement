@@ -22,7 +22,7 @@ const SeachBar = () => {
     return (
         <>
             <div className="my-10 mx-10 md:mx-20 lg:mx-36 xl:mx-[280px] lg:pb-3 xl:pb-0 rounded flex flex-col lg:flex-row md:justify-evenly shadow-lg">
-                <div className="xl:p-[2px] gap-5 lg:gap-0 flex flex-col lg:flex-row items-center">
+                <div className="xl:p-[2px] gap-5 lg:gap-0 flex flex-col lg:flex-row items-center text-sm">
 
                     <div className='lg:border-r-2 lg:pr-3'>
                         <div className="flex items-center gap-1">
@@ -30,7 +30,7 @@ const SeachBar = () => {
                             <p className="font-semibold text-base xl:text-xl">Location</p>
                         </div>
                         <div className="">
-                            <input type="text" placeholder='Where are you going' className='border-2 border-[#FA7436] rounded-lg outline-none text-center w-48' ref={locationRef} />
+                            <input type="text" placeholder='Where are you going' className='border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 placeholder-black' ref={locationRef} />
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@ const SeachBar = () => {
                             <p className="font-semibold text-base xl:text-xl">Date</p>
                         </div>
                         <div className="">
-                            <input type="date" placeholder='When you will go' className='px-2 border-2 border-[#FA7436] rounded-lg outline-none text-center w-48' ref={dateRef} />
+                            <input type="date" placeholder='When you will go' className='px-2 border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 placeholder-black' ref={dateRef} />
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@ const SeachBar = () => {
                             <p className="font-semibold text-base xl:text-xl">Guest</p>
                         </div>
                         <div className="">
-                            <input type="number" placeholder='No of guest' className='border-2 border-[#FA7436] rounded-lg outline-none text-center w-48' ref={peopleRef} />
+                            <input type="number" placeholder='No of guest' className='border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 placeholder-black' ref={peopleRef} />
                         </div>
                     </div>
                 </div>
