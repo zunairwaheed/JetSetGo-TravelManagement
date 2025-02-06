@@ -5,7 +5,7 @@ import {FeaturedData, TourCardsData } from '../Data'
 const TourDetails = () => {
   return (
     <>
-      <BookingCard data={FeaturedData}/>
+      <BookingCard />
     </>
   )
 }

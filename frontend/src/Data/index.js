@@ -19,28 +19,30 @@ import avatar from "../assets/avatar.jpg"
 
 export const TourCardsData = [
         {
-            id: 1,
+            id: 11,
             imgUrl: img1,
             city: "Paris",
             country: "France",
             rating: 4.8,
             price: 120,
+            charges: 10,
             desc: "Experience the charm of Paris with guided city tours and Seine River cruises.",
             Book: "Book Now"
         },
         {
-            id: 2,
+            id: 12,
             imgUrl: img2,
             city: "Rome",
             country: "Italy",
             rating: 4.7,
             price: 100,
             charges: 10,
+            charges: 10,
             desc: "Explore the ancient ruins of Rome, including the Colosseum and the Vatican.",
             Book: "Book Now"
         },
         {
-            id: 3,
+            id: 13,
             imgUrl: img3,
             city: "Barcelona",
             country: "Spain",
@@ -51,7 +53,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 4,
+            id: 14,
             imgUrl: img4,
             city: "Amsterdam",
             country: "Netherlands",
@@ -62,7 +64,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 5,
+            id: 15,
             imgUrl: img1,
             city: "Berlin",
             country: "Germany",
@@ -73,7 +75,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 6,
+            id: 16,
             imgUrl: img2,
             city: "Vienna",
             country: "Austria",
@@ -84,7 +86,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 7,
+            id: 17,
             imgUrl: img3,
             city: "Prague",
             country: "Czech Republic",
@@ -95,7 +97,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 8,
+            id: 18,
             imgUrl: img4,
             city: "Lisbon",
             country: "Portugal",
@@ -106,7 +108,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 9,
+            id: 19,
             imgUrl: img1,
             city: "Zurich",
             country: "Switzerland",
@@ -117,7 +119,7 @@ export const TourCardsData = [
             Book: "Book Now"
         },
         {
-            id: 10,
+            id: 20,
             imgUrl: img2,
             city: "Stockholm",
             country: "Sweden",
