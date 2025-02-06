@@ -14,7 +14,7 @@ const Footer = () => {
                         <div className="md:w-1/2">
                             <div className="flex gap-2 justify-center md:justify-start items-center">
                                 <p className="text-md md:text-lg lg:text-xl xl:text-2xl font-bold">
-                                    Trabook
+                                Jet<span className='text-main'>Set</span>Go
                                 </p>
                                 <FaPlaneDeparture className='hidden md:block' color="#FA7436" size="30px" />
                             </div>

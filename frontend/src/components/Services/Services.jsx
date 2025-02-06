@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import ServicesData from './ServicesData'
+import {ServicesData} from "../../Data/index.js"
 
 
 const Services = () => {
