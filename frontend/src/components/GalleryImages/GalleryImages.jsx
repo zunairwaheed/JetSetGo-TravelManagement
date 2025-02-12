@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-// import GalleryData from "./GalleryData";
-import { GalleryData } from "../../Data/index.js";
+import {GalleryData} from "../../Data/index.js";
 
 const GalleryImages = () => {
     const [gallery, setgallery] = useState(false)
