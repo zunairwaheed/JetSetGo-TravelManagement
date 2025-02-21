@@ -1,9 +1,14 @@
-import React from 'react'
+import { useLocation } from "react-router-dom";
+import CommonPicture from "../components/CommonPicture/CommonPicture";
 
-const searchResultList = () => {
-  return (
-    <div>searchResultList</div>
-  )
-}
+const SearchTourList = () => {
+    const location = useLocation();
 
-export default searchResultList
+    return (
+        <>
+        <CommonPicture/>
+        </>
+    );
+};
+
+export default SearchTourList;

@@ -1,18 +1,22 @@
 import React, { useRef } from "react";
-import { ToursData } from "../../Data/index.js"
 import { FaArrowRight, FaStar } from "react-icons/fa";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from "react-router-dom";
 import Card from "../Common/Card.jsx";
-
+import useFetch from "../hooks/useFetch.js"
+import { BASE_URL } from "../../utils/config.js";
 
 const FeaturedCard = () => {
+  const { data: featuredTours, loading, error } = useFetch(
+    `${BASE_URL}/tours/search/getFeaturedTours`
+  );
+
   const navigate = useNavigate();
 
-  const handleBookingClick = (id, city) => {
-    navigate(`/tour/${id}/${city}`);
+  const handleBookingClick = (_id, city) => {
+    navigate(`/tour/${_id}/${city}`);
   };
 
   const sliderRef = useRef(null);
@@ -79,12 +83,19 @@ const FeaturedCard = () => {
           </div>
         </div>
 
+        {
+          loading && <h4>Loading......</h4>
+        }
+        {
+          error && <h4>{error}</h4>
+        }
+
         <div>
           <Slider {...settings} ref={sliderRef}>
-            {ToursData.filter((item) => item.featured).map((item) => (
+            {!loading && !error && featuredTours.filter((item) => item.featured).map((item) => (
               <Card
-                key={item.id}
-                cid={item.id}
+                key={item._id}
+                cid={item._id}
                 img={item.imgUrl}
                 ccity={item.city}
                 crating={item.rating}
@@ -96,7 +107,7 @@ const FeaturedCard = () => {
             ))}
           </Slider>
 
-        </div> 
+        </div>
       </div>
     </>
   );

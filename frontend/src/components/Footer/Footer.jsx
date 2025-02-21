@@ -39,7 +39,7 @@ const Footer = () => {
                                 <div className="flex flex-col text-xs lg:text-sm leading-7 lg:leading-7">
                                     <NavLink to="/" className='hover:text-main'>Home</NavLink>
                                     <NavLink to="/about" className='hover:text-main'>About</NavLink>
-                                    <NavLink to="/tour" className='hover:text-main'>Tours</NavLink>
+                                    <NavLink to="/tours" className='hover:text-main'>Tours</NavLink>
                                     <NavLink to="/signup" className='hover:text-main'>SignUp</NavLink>
                                     <NavLink to="/login" className='hover:text-main'>LogIn</NavLink>
                                 </div>

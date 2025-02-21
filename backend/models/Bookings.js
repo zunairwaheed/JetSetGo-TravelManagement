@@ -12,7 +12,7 @@ const bookingsSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        fullName: {
+        userName: {
             type: String,
             required: true,
         },

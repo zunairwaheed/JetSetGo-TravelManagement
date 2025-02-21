@@ -6,7 +6,6 @@ export const signup = async (req, res) => {
     try {
         const { username, email, password, confirmPassword } = req.body;
 
-        // Check if password and confirmPassword match
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
@@ -22,7 +21,6 @@ export const signup = async (req, res) => {
             });
         }
 
-        //hashing Password
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(password, salt)
 
@@ -46,36 +44,53 @@ export const signup = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    const email = req.body.email
     try {
-        const user = await User.findOne({ email })
-        //if user not exist
+        const { email, password } = req.body;
+
+        // 1. Check if user exists
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not Found" })
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        //if user exist check and compare password
-        const checkCorrectPassword = await bcrypt.compare(req.body.password, user.password)
-
-        if (!checkCorrectPassword) {
-            return res.status(401).json({ success: false, message: "Incorect Email or Password" });
-
+        // 2. Validate password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ success: false, message: "Incorrect email or password" });
         }
-        const { password: _, role, ...rest } = user._doc;
 
-        //create jwt token
+        // 3. Generate JWT Token
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "15d" }
         );
 
-        res.cookie('accessToken', token, {
-            httpOnly: true,
-            expires: token.expiresIn,
-        }).status(200).json({ token, data: { ...rest }, role })
-    }
-    catch (err) {
-        return res.status(500).json({ success: false, message: "Failed to Login" })
+        console.log("Generated Token:", token); // Debugging
+
+        // 4. Set Cookie
+        res.cookie("accessToken", token, {
+            httpOnly: true, 
+            secure: false, // Change to true in production with HTTPS
+            sameSite: "Lax",
+            maxAge: 15 * 24 * 60 * 60 * 1000,
+        });
+
+        console.log("Cookie Set Successfully"); // Debugging
+
+        // 5. Send Response
+        const { password: _, ...userData } = user._doc;
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            token, // Optional: remove if only using cookie
+            data: userData,
+            role: user.role,
+        });
+
+    } catch (err) {
+        console.error("Login Error:", err.message);
+        return res.status(500).json({ success: false, message: "Failed to login" });
     }
 };
+

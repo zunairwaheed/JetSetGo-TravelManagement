@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 const Card = ({ cid, img, ccity, crating, cdesc, cprice, cBook, cfeatured }) => {
     const navigate = useNavigate();
 
-    const handleBookingClick = (id, city) => {
-        navigate(`/tour/${id}/${city}`);
+    const handleBookingClick = (_id) => {
+        navigate(`/tour/${_id}`);
     };
+    
+    
 
     return (
         <div className="w-60 h-auto border-2 rounded-xl bg-white pb-2 mx-auto">
@@ -36,7 +38,7 @@ const Card = ({ cid, img, ccity, crating, cdesc, cprice, cBook, cfeatured }) => 
                 </div>
                 <div>
                     <button
-                        onClick={() => handleBookingClick(cid, ccity)}
+                        onClick= {() => handleBookingClick(cid)}
                         className="px-1 py-1 text-sm lg:font-bold bg-[#FA7436] text-white rounded active:bg-[#FEDCCC] active:text-[#FA7436]"
                     >
                         {cBook}

@@ -78,8 +78,8 @@ export const getAllTour = async (req, res) => {
     const page = parseInt(req.query.page) || 0;
     try {
         const tours = await Tour.find({})
-            .skip(page * 2)
-            .limit(2);
+            .skip(page * 8)
+            .limit(8);
 
         res.status(200).json({
             success: true,
@@ -97,30 +97,40 @@ export const getAllTour = async (req, res) => {
 }
 
 export const getTourBySearch = async (req, res) => {
-    const country = new RegExp(req.query.country, "i") //i means case sensitive
-    // const date = parseInt(req.query.date)
+    const country = new RegExp(req.query.country, "i");
     const maxGroupSize = parseInt(req.query.maxGroupSize);
+    const date = req.query.date ? new Date(req.query.date) : null;
+    const people = parseInt(req.query.people);
+
+    const filters = {
+        country,
+        maxGroupSize: { $gte: maxGroupSize },
+    };
+
+    if (date) {
+        filters.date = { $gte: date };
+    }
+
+    if (people) {
+        filters.maxGroupSize = { $gte: people };
+    }
 
     try {
-        const tours = await Tour.find({
-            country,
-            // date: {$gte: date},
-            maxGroupSize: { $gte: maxGroupSize }
-        })
+        const tours = await Tour.find(filters);
         res.status(200).json({
             success: true,
             count: tours.length,
-            message: "Successfull",
+            message: "Successful",
             data: tours,
         });
-    }
-    catch (err) {
+    } catch (err) {
         res.status(404).json({
             success: false,
             message: "Not Found",
         });
     }
-}
+};
+
 
 export const getFeaturedTour = async (req, res) => {
     try {
@@ -141,7 +151,7 @@ export const getFeaturedTour = async (req, res) => {
 }
 
 export const getTourCount = async (req, res) => {
-    try {
+        try {
         const tourCount = await Tour.estimatedDocumentCount()
 
         res.status(200).json({

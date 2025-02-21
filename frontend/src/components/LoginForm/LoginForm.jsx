@@ -1,17 +1,45 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { BASE_URL } from "../../utils/config";
 
 const Login = () => {
+    const { dispatch } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {
-        console.log(data);
-    };
+    const onSubmit = async (data) => {
+        try {
+          const res = await fetch(`${BASE_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+            }),
+            credentials: "include",
+          });
+    
+          const result = await res.json();
+          if (!res.ok) {
+            alert(result.message);
+            return;
+          }
+          console.log(result.data)
+    
+          dispatch({ type: "LOGIN_SUCCESS", payload: result.data });
+          navigate("/");
+        } catch (error) {
+          dispatch({type: "LOGIN_FAILURE", payload: error.message})
+        }
+      };
 
     return (
         <div className="min-h-screen flex items-center justify-center">

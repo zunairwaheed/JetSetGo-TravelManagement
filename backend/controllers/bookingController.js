@@ -1,13 +1,15 @@
-import Bookings from "../models/Bookings.js"
+import Booking from "../models/Bookings.js"
 
 export const createBooking = async (req, res) => {
-    const newBooking = new Bookings(req.body);
+    const newBooking = new Booking(req.body);
+    
     try {
         const savedBooking = await newBooking.save();
         res.status(200).json({ success: true, message: "Your tour is Booked", data: savedBooking })
     }
     catch (err) {
-        res.status(500).json({ success: false, message: "Internal Server Error" })
+        console.error("Booking Creation Error:", err);
+        res.status(500).json({ success: false, message: err.message });
     }
 }
 
@@ -15,7 +17,7 @@ export const getBooking = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const book = await Bookings.findById(id);
+        const book = await Booking.findById(id);
 
         res.status(200).json({ success: true, message: "Successful", data: book })
     }
@@ -27,7 +29,7 @@ export const getBooking = async (req, res) => {
 export const getAllBooking = async (req, res) => {
 
     try {
-        const books = await Bookings.find()
+        const books = await Booking.find()
 
         res.status(200).json({ success: true, message: "Successful", data: books })
     }

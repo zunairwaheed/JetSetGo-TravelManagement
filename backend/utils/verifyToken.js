@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken"
 
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.accessToken
+    const token = req.cookies.accessToken;
+    console.log("tokentokentoken",token)
 
     if (!token) {
         return res.status(401).json({ success: false, message: "You are not a Authorized user" })
@@ -12,8 +13,9 @@ const verifyToken = (req, res, next) => {
             return res.status(401).json({ success: false, message: "Token is invalid" })
         }
         req.user = user
-        next()
+        next();
     })
+
 }
 
 export const verifyUser = (req, res, next) => {

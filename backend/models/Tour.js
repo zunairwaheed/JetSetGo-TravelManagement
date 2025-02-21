@@ -41,6 +41,10 @@ const tourSchema = new mongoose.Schema({
     book: {
         type: String,
         required: true,
+    },
+    date: {
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 
