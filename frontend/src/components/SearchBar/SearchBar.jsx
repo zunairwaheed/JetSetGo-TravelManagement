@@ -7,49 +7,40 @@ import { BASE_URL } from "../../utils/config.js";
 import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
-    const [location, setLocation] = useState(""); // Location (Country)
-    const [date, setDate] = useState(""); // Date
-    const [people, setPeople] = useState(""); // Number of guests
+    const [location, setLocation] = useState("");
+    const [date, setDate] = useState("");
+    const [people, setPeople] = useState("");
 
     const navigate = useNavigate();
-    const { handleSubmit } = useForm(); // Removed `register` to avoid conflict
+    const { handleSubmit } = useForm();
 
     const searchHandler = async () => {
-        // Validate form inputs
         if (!location || !date || !people) {
             alert("Please fill all the fields");
             return;
         }
 
         try {
-            // Formulate the search URL according to your required format
             const searchUrl = `${BASE_URL}/tours/search/getTourBySearch?country=${location}&date=${date}&maxGroupSize=${people}`;
             console.log("Search URL:", searchUrl);
     
-            // Make the API request
             const res = await fetch(searchUrl);
     
-            // Check if the response is OK
             if (!res.ok) {
                 throw new Error(`Error: ${res.status} - ${res.statusText}`);
             }
     
-            // Parse the response JSON
             const result = await res.json();
     
-            // Check if result has expected data
             if (!result || !result.data) {
                 throw new Error("No data found in the response");
             }
      
-            // Log result for debugging
             console.log("Search Results:", result.data);
     
-            // Navigate to the SearchTourList component with query params and data
             navigate(`/tours/search?country=${location}&date=${date}&maxGroupSize=${people}`, { state: { tours: result.data } });
     
         } catch (error) {
-            // Log error and alert the user
             console.error("Search failed:", error);
             alert(`Something went wrong: ${error.message}`);
         }
@@ -57,7 +48,7 @@ const SearchBar = () => {
 
     return (
         <form
-            onSubmit={handleSubmit(searchHandler)} // Ensure form validation before submission
+            onSubmit={handleSubmit(searchHandler)}
             className="my-10 mx-10 md:mx-20 lg:mx-36 xl:mx-[280px] lg:pb-3 xl:pb-0 rounded flex flex-col lg:flex-row md:justify-evenly shadow-lg"
         >
             <div className="xl:pb-2 gap-5 lg:gap-0 flex flex-col lg:flex-row items-center text-sm">

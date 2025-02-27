@@ -1,31 +1,27 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react';
 import { FaAlignJustify } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
-// import logo from "../../assets/logo.png"
 import { FaPlaneDeparture } from "react-icons/fa6";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { AuthContext } from '../../context/AuthContext';
-
-
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../context/AuthSlice.jsx"; // Import Redux logout action
 
 const Header = () => {
     const navigate = useNavigate();
-    const { user, dispatch } = useContext(AuthContext)
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user); // Get user from Redux store
 
     const Logout = () => {
-        dispatch({ type: 'LOGOUT' })
-        navigate('/')
-    }
+        dispatch(logout()); // Dispatch logout action
+        navigate('/');
+    };
 
     const [visible, setVisible] = useState(false);
 
     // Toggle menu visibility
-    const toggleMenu = () => {
-        setVisible(true);
-    };
-    const handleMenu = () => {
-        setVisible(false)
-    }
+    const toggleMenu = () => setVisible(true);
+    const handleMenu = () => setVisible(false);
+
     return (
         <>
             <header>
@@ -44,7 +40,6 @@ const Header = () => {
                         <NavLink to="/" className={({ isActive }) =>
                             `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
                             } active:bg-black`}>Home</NavLink>
-
                         <NavLink to="/about" className={({ isActive }) =>
                             `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
                             } active:bg-black`}>About</NavLink>
@@ -52,6 +47,7 @@ const Header = () => {
                             `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
                             } active:bg-black`}>Tour</NavLink>
                     </div>
+
                     {/* Mobile Menu Bar */}
                     <div className={`w-0 h-full fixed top-0 left-0 bg-white transition-all overflow-hidden ${visible ? "w-full" : "w-0"}`}>
                         <div onClick={handleMenu} className='p-5'><IoMdArrowRoundBack color="#FA7436" /></div>
@@ -64,7 +60,6 @@ const Header = () => {
                             </ul>
                         </div>
                     </div>
-
 
                     <div className="md:space-x-1">
                         {
@@ -100,7 +95,7 @@ const Header = () => {
                 </div>
             </header>
         </>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

@@ -1,113 +1,55 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, NavLink } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { BASE_URL } from "../../utils/config";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../../context/AuthSlice.jsx";
 
 const Signup = () => {
-  const { dispatch } = useContext(AuthContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`${BASE_URL}/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          confirmPassword: data.confirmPassword, 
-        }),
-      });
-
-      const result = await res.json();
-      if (!res.ok) {
-        alert(result.message);
-        return;
-      }
-
-      dispatch({ type: "REGISTER_SUCCESS" });
+      await dispatch(registerUser(data)).unwrap();
       navigate("/login");
     } catch (error) {
-      alert(error.message);
+      alert(error);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-main mb-6">
-          Create Your Account
-        </h2>
-        <p className="text-center text-sm text-gray-500 mb-8">
-          Sign up to start your journey
-        </p>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <InputField 
-            id="username" label="Full Name" type="text" register={register} errors={errors} required 
-          />
-          <InputField 
-            id="email" label="Email Address" type="email" register={register} errors={errors} required 
-          />
-          <InputField 
-            id="password" label="Password" type="password" register={register} errors={errors} required minLength={6} 
-          />
-          <InputField
-            id="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            register={register}
-            errors={errors}
-            required
-            validate={(value) => value === watch("password") || "Passwords do not match"}
-          />
-          <button
-            type="submit"
-            className="w-full py-2 bg-main text-white font-semibold rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-main"
-          >
-            Sign Up
-          </button>
+        <h2 className="text-2xl font-bold text-center text-main mb-6">Create Your Account</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+          <input type="text" placeholder="Full Name" {...register("username", { required: "Full Name is required" })}
+            className={`w-full px-4 py-2 border rounded-md ${errors.username ? "border-red-500" : "border-gray-300"}`} />
+          {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+
+          <input type="email" placeholder="Email Address" {...register("email", { required: "Email is required" })}
+            className={`w-full px-4 py-2 border rounded-md ${errors.email ? "border-red-500" : "border-gray-300"}`} />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+
+          <input type="password" placeholder="Password" {...register("password", { required: "Password is required", minLength: { value: 6, message: "At least 6 characters" } })}
+            className={`w-full px-4 py-2 border rounded-md ${errors.password ? "border-red-500" : "border-gray-300"}`} />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+
+          <input type="password" placeholder="Confirm Password" {...register("confirmPassword", { required: "Confirm Password is required", validate: value => value === watch("password") || "Passwords do not match" })}
+            className={`w-full px-4 py-2 border rounded-md ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`} />
+          {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+
+          <button type="submit" className="w-full py-2 bg-main text-white font-semibold rounded-md hover:bg-orange-700">Sign Up</button>
         </form>
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
-            Already have an account?{" "}
-            <NavLink to="/login" className="text-main hover:underline">
-              Login
-            </NavLink>
-          </p>
-        </div>
+
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Already have an account? <NavLink to="/login" className="text-main hover:underline">Login</NavLink>
+        </p>
       </div>
     </div>
   );
 };
-
-const InputField = ({ id, label, type, register, errors, required, minLength, validate }) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-      {label}
-    </label>
-    <input
-      type={type}
-      id={id}
-      {...register(id, {
-        required: required ? `${label} is required` : false,
-        minLength: minLength && { value: minLength, message: `${label} must be at least ${minLength} characters long` },
-        validate,
-      })}
-      className={`mt-1 block w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-main ${
-        errors[id] ? "border-red-500" : "border-gray-300"
-      }`}
-    />
-    {errors[id] && <p className="text-red-500 text-xs mt-1">{errors[id].message}</p>}
-  </div>
-);
 
 export default Signup;

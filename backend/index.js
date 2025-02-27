@@ -4,6 +4,15 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import routes from "./routes/routes.js";
+import path from "path";
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: 'dvoitkw0q',
+  api_key: '187525565483722',
+  api_secret: '2bEfvxVkAD3zxMj_6nGXvCNLF0E' // Click 'View API Keys' above to copy your API secret
+});
+
 
 dotenv.config();
 const app = express();
@@ -29,6 +38,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "backend", "uploads")));
 
 // Routes
 app.use('/api/v1', routes);

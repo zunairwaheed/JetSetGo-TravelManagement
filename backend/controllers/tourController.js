@@ -16,7 +16,7 @@ export const createTour = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to create",
-            error: err.message,  // Include the error message in the response
+            error: err.message,
         });
     }
 };
