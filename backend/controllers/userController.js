@@ -1,4 +1,4 @@
-import User from "../models/Tour.js";
+import User from "../models/User.js";
 
 export const updateUser = async (req, res) => {
     const id = req.params.id

@@ -3,7 +3,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const Card = ({ cid, img, ccity, crating, cdesc, cprice, cBook, cfeatured }) => {
+const Card = ({ cid, img, ccity, crating, cdesc, cprice, cfeatured }) => {
     const navigate = useNavigate();
 
     const handleBookingClick = (_id) => {
@@ -31,7 +31,7 @@ const Card = ({ cid, img, ccity, crating, cdesc, cprice, cBook, cfeatured }) => 
             <div className="flex justify-between px-2">
                 <p className="text-sm">{cdesc}</p>
             </div>
-            <div className="flex justify-between py-2 px-2">
+            <div className=" flex justify-between py-2 px-2">
                 <div className="flex">
                     <p className="font-bold text-[#FA7436]">${cprice}</p>
                     <p className="pt-1 text-sm">/person</p>
@@ -41,7 +41,7 @@ const Card = ({ cid, img, ccity, crating, cdesc, cprice, cBook, cfeatured }) => 
                         onClick= {() => handleBookingClick(cid)}
                         className="px-1 py-1 text-sm lg:font-bold bg-[#FA7436] text-white rounded active:bg-[#FEDCCC] active:text-[#FA7436]"
                     >
-                        {cBook}
+                        Book Now
                     </button>
                 </div>
             </div>

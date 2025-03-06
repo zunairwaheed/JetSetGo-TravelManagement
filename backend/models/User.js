@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "user",
     },
+    profilePic: {
+        type: String,
+        default: "login.jpeg",
+    }
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);

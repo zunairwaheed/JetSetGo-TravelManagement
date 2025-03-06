@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.0",
+<<<<<<< HEAD
+=======
+    "axios": "^1.8.1",
+>>>>>>> cd83868 (Api's Integration)
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",

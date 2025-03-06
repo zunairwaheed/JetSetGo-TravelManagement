@@ -8,14 +8,15 @@ const useFetch = (url) => {
     useEffect(()=>{
         const fetchData = async () => {
             setLoading(true)
+            setError(null);
 
             try{
-                const res = await fetch(url)
+                const res = await fetch(url, { credentials: "include" });
                 if(!res.ok){
                     setError("Failed to Fetch")
                 }
                 const result = await res.json()
-                setData(result.data)
+                setData(Array.isArray(result) ? result : result.data || []);
                 setLoading(false)
             }
             catch(err){

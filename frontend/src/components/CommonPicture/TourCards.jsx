@@ -10,7 +10,7 @@ const TourCards = () => {
 
     // Fetch tours based on the current page
     const { data: tours, loading, error } = useFetch(`${BASE_URL}/tours?page=${page}&limit=${limit}`);
-    const { data: tourCount } = useFetch(`${BASE_URL}/tours/search/getTourCount`); // Get total tour count for pagination
+    const { data: tourCount } = useFetch(`${BASE_URL}/tours/search/getTourCount`);
 
     // Update page count when tourCount changes
     useEffect(() => {

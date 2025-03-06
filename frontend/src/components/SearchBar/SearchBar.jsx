@@ -56,15 +56,15 @@ const SearchBar = () => {
                 {/* Location Input */}
                 <div className="lg:border-r-2 lg:pr-3">
                     <div className="flex items-center gap-1">
-                        <IoLocationSharp className="text-[#FA7436]" />
+                        <IoLocationSharp className="text-main" />
                         <p className="font-semibold text-base xl:text-xl">Location</p>
                     </div>
                     <input
                         type="text"
                         placeholder="Where are you going"
                         value={location}
-                        onChange={(e) => setLocation(e.target.value)} // Correctly updates state
-                        className="border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 placeholder-gray-500"
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="border-2 border-main rounded-lg outline-none text-center w-48 h-10 placeholder-gray-500"
                         required
                     />
                 </div>
@@ -72,14 +72,14 @@ const SearchBar = () => {
                 {/* Date Input */}
                 <div className="lg:px-3 lg:border-r-2">
                     <div className="flex items-center gap-1">
-                        <BsCalendar2DateFill className="text-[#FA7436]" />
+                        <BsCalendar2DateFill className="text-main" />
                         <p className="font-semibold text-base xl:text-xl">Date</p>
                     </div>
                     <input
                         type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)} // Correctly updates state
-                        className="px-2 border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 text-gray-500"
+                        className="px-2 border-2 border-main rounded-lg outline-none text-center w-48 h-10 text-gray-500"
                         required
                     />
                 </div>
@@ -87,7 +87,7 @@ const SearchBar = () => {
                 {/* Guests Input */}
                 <div className="lg:pl-3">
                     <div className="flex items-center gap-1">
-                        <IoPeopleSharp className="text-[#FA7436]" />
+                        <IoPeopleSharp className="text-main" />
                         <p className="font-semibold text-base xl:text-xl">Guest</p>
                     </div>
                     <input
@@ -95,7 +95,7 @@ const SearchBar = () => {
                         placeholder="No of guests"
                         value={people}
                         onChange={(e) => setPeople(e.target.value)} // Correctly updates state
-                        className="border-2 border-[#FA7436] rounded-lg outline-none text-center w-48 h-10 placeholder-gray-500"
+                        className="border-2 border-main rounded-lg outline-none text-center w-48 h-10 placeholder-gray-500"
                         required
                     />
                 </div>
@@ -105,7 +105,7 @@ const SearchBar = () => {
             <div className="flex justify-center mb-3 lg:mb-0">
                 <button
                     type="submit"
-                    className="bg-[#FA7436] w-26 lg:mt-3 xl:w-36 xl:text-xl xl:my-5 px-2 py-2 mt-3 rounded font-semibold text-base text-white active:bg-[#FEDCCC] active:text-[#FA7436]"
+                    className="bg-main w-26 lg:mt-3 xl:w-36 xl:text-xl xl:my-5 px-2 py-2 mt-3 rounded font-semibold text-base text-white active:bg-[#FEDCCC] active:text-main"
                 >
                     Search
                 </button>

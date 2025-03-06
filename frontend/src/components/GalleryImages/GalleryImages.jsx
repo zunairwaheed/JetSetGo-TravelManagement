@@ -6,9 +6,12 @@ const GalleryImages = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+<<<<<<< HEAD
     const [file, setFile] = useState(null);
     const [uploadMessage, setUploadMessage] = useState("");
     const [deleteMessage, setDeleteMessage] = useState("");
+=======
+>>>>>>> cd83868 (Api's Integration)
 
     useEffect(() => {
         const fetchGalleryImages = async () => {
@@ -33,6 +36,7 @@ const GalleryImages = () => {
         setGallery((prev) => !prev);
     };
 
+<<<<<<< HEAD
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
     };
@@ -87,6 +91,8 @@ const GalleryImages = () => {
         }
     };
 
+=======
+>>>>>>> cd83868 (Api's Integration)
     return (
         <div className="mx-10 md:mx-20 lg:mx-36 xl:mx-[280px]">
             <div className="py-10 max-w-screen-xl mx-auto">
@@ -96,6 +102,7 @@ const GalleryImages = () => {
                 <p className="text-xs text-center pt-3 pb-3 px-8 md:px-48 lg:px-56 xl:px-72 2xl:px-80">
                     Discover our fantastic early booking discounts & start planning your journey.
                 </p>
+<<<<<<< HEAD
 
                 <div className="flex justify-center mb-3">
                     <button
@@ -170,6 +177,53 @@ const GalleryImages = () => {
                         {deleteMessage && <p className="text-red-500 text-center">{deleteMessage}</p>}
                     </div>
                 </div>
+=======
+
+                {/* Mobile View Toggle Button */}
+                <div className="flex justify-center mb-3">
+                    <button
+                        onClick={toggleGallery}
+                        className="px-3 py-1 bg-main text-white font-bold rounded lg:hidden"
+                    >
+                        {gallery ? "Hide Gallery" : "Visit Gallery"}
+                    </button>
+                </div>
+
+                {loading && <p className="text-center">Loading images...</p>}
+                {error && <p className="text-center text-red-500">{error}</p>}
+
+                {/* Mobile Gallery View */}
+                {gallery && (
+                    <div className="block lg:hidden">
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            {images.map((image) => (
+                                <div key={image._id} className="rounded-lg">
+                                    <img
+                                        src={image.imgUrl}
+                                        alt={image.title || "Gallery Image"}
+                                        className="w-full h-auto object-cover rounded-lg shadow-md hover:scale-110 duration-300"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Desktop Gallery View */}
+                <div className="hidden lg:block">
+                    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-4">
+                        {images.map((image) => (
+                            <div key={image._id} className="rounded-lg">
+                                <img
+                                    src={image.imgUrl}
+                                    alt={image.title || "Gallery Image"}
+                                    className="w-full h-auto object-cover rounded-lg shadow-md hover:scale-110 duration-300"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+>>>>>>> cd83868 (Api's Integration)
             </div>
         </div>
     );
