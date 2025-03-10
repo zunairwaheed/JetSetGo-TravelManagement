@@ -1,17 +1,11 @@
 import React from 'react'
-import { AdminTourManagement, AdminUserManagement, AdminGalleryManagement, AdminBookingManagement } from '../components/Dashboard/AdminDashboard'
-import TourManagement from '../components/Dashboard/TourManagement'
-import SidePanel from '../components/Dashboard/SidePanel'
+import AdminDashboard from '../components/Dashboard/AdminDashboard'
+
 
 const Admin = () => {
   return (
     <>
-      {/* <AdminTourManagement />
-      <AdminUserManagement />
-      <AdminGalleryManagement/>
-      <AdminBookingManagement/> */}
-      <SidePanel/>
-      {/* <TourManagement/> */}
+     <AdminDashboard/>
       
     </>
   )

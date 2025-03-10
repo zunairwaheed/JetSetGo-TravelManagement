@@ -1,58 +1,41 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, Outlet } from "react-router-dom";
+import { IoHome } from "react-icons/io5";
+import { MdTour } from "react-icons/md";
+import { FaUserCheck } from "react-icons/fa";
+import { RiGalleryFill } from "react-icons/ri";
+import { SlCalender } from "react-icons/sl";
 export default function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true);
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
 
     return (
-        <div className="flex">
-            {/* Sidebar */}
-            <div
-                className={`bg-gray-900 text-white h-screen p-5 pt-8 relative transition-all duration-300 ${isOpen ? "w-64" : "w-20"
-                    }`}
-            >
-                {/* Toggle Button */}
-                <button
-                    onClick={toggleSidebar}
-                    className="absolute top-4 right-4 text-white focus:outline-none"
-                >
-                    {isOpen ? "✖" : "☰"}
-                </button>
+        <div className="flex flex-col md:flex-row px-3">
+            {/* Sidebar for Desktop */}
+            <div className="bg-gray-900 h-[850px] text-white px-5 py-8 w-64 hidden md:block rounded">
 
-                {/* Logo */}
-                <div className="flex items-center space-x-2 pb-6 border-b border-gray-700">
-                    <span className="text-xl font-bold">{isOpen ? "Admin Panel" : "AP"}</span>
-                </div>
+                <div className="pb-6 border-b border-gray-700 text-xl font-bold text-center">Admin Panel</div>
 
-                {/* Navigation Links */}
                 <nav className="mt-8 space-y-4">
-                    <SidebarItem text="Dashboard" to="/dashboard" isOpen={isOpen} />
-                    <SidebarItem text="Tour Management" to="/tourmanagement" isOpen={isOpen} />
-                    <SidebarItem text="User Management" to="/usermanagement" isOpen={isOpen} />
-                    <SidebarItem text="Gallery Management" to="/gallerymanagement" isOpen={isOpen} />
-                    <SidebarItem text="Booking Management" to="/bookingmanagement" isOpen={isOpen} />
+                    <Link to="/admin" className="block p-3 rounded-lg hover:bg-gray-700">Dashboard</Link>
+                    <Link to="tourmanagement" className="block p-3 rounded-lg hover:bg-gray-700">Tour Management</Link>
+                    <Link to="usermanagement" className="block p-3 rounded-lg hover:bg-gray-700">User Management</Link>
+                    <Link to="gallerymanagement" className="block p-3 rounded-lg hover:bg-gray-700">Gallery Management</Link>
+                    <Link to="bookingmanagement" className="block p-3 rounded-lg hover:bg-gray-700">Booking Management</Link>
                 </nav>
+            </div>
 
-                {/* Logout Button */}
-                <div className="absolute bottom-5 w-full">
-                    <SidebarItem text="Logout" to="/" isOpen={isOpen} />
-                </div>
+            {/* Main Content */}
+            <div className="flex-1 p-6">
+                
+                <Outlet />
+            </div>
+
+            {/* Bottom Navigation for Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white flex justify-around p-3 md:hidden">
+                <Link to="/admin" className="p-2"><IoHome /></Link>
+                <Link to="tourmanagement" className="p-2"><MdTour /></Link>
+                <Link to="usermanagement" className="p-2"><FaUserCheck /></Link>
+                <Link to="gallerymanagement" className="p-2"><RiGalleryFill /></Link>
+                <Link to="bookingmanagement" className="p-2"><SlCalender /></Link>
             </div>
         </div>
-    );
-}
-
-function SidebarItem({ text, to, isOpen }) {
-    return (
-        <Link
-            to={to}
-            className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-700 transition-all"
-        >
-            <span className="text-base">{isOpen ? text : text.charAt(0)}</span>
-        </Link>
     );
 }

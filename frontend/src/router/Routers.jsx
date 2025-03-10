@@ -8,12 +8,14 @@ import Tours from '../pages/Tours'
 import About from '../pages/About'
 import Signup from '../pages/Signup'
 import ThankYou from '../pages/ThankYou'
-import AdminDashboard from '../pages/Admin'
 import Setting from '../pages/Setting'
 import TourManagement from '../components/Dashboard/TourManagement'
 import UserManagement from '../components/Dashboard/UserManagement'
 import BookingManagement from '../components/Dashboard/BookingManagement'
 import GalleryManagement from '../components/Dashboard/GalleryManagement'
+import SidePanel from '../components/Dashboard/SidePanel'
+import Dashboard from '../components/Dashboard/Dashboard'
+
 
 const Routers = () => {
   return (
@@ -26,18 +28,21 @@ const Routers = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/thankyou" element={<ThankYou />} />
+      <Route path="/settings" element={<Setting />} />
+
       <Route path="/admin" element={
         JSON.parse(localStorage.getItem("user"))?.role === "admin" ? (
-          <AdminDashboard />
+                <SidePanel/>
         ) : (
           <Navigate to="/login" />
         )
-      } />
-      <Route path="/settings" element={<Setting />} />
-      <Route path="/tourmanagement" element={<TourManagement/>} />
-      <Route path="/usermanagement" element={<UserManagement/>} />
-      <Route path="/bookingmanagement" element={<BookingManagement/>} />
-      <Route path="/gallerymanagement" element={<GalleryManagement/>} />
+      }>
+        <Route path="tourmanagement" element={<TourManagement />} />
+        <Route path="usermanagement" element={<UserManagement />} />
+        <Route path="bookingmanagement" element={<BookingManagement />} />
+        <Route path="gallerymanagement" element={<GalleryManagement />} />
+        <Route path="" element={<Dashboard/>} />
+      </Route>
     </Routes>
   )
 }

@@ -21,7 +21,7 @@ const useFetchAllTours = (url) => {
                     allTours = [...allTours, ...result.data];
 
                     if (result.data.length < 8) {
-                        moreData = false; // Stop if less than 8 items are returned
+                        moreData = false;
                     } else {
                         page++;
                     }

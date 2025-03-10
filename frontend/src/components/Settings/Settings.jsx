@@ -12,7 +12,6 @@ const Settings = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const userId = storedUser?._id;
 
-    // Fetch user data
     const handleViewProfile = async () => {
         if (user) {
             setUser();
@@ -34,10 +33,8 @@ const Settings = () => {
         }
     };
 
-    // Fetch user bookings
     const handleViewBookings = async () => {
         if (bookings.length > 0) {
-            // If bookings are already shown, hide them
             setBookings([]);
             return;
         }
@@ -46,7 +43,7 @@ const Settings = () => {
         setLoading(true);
         try {
             const response = await fetch(`${BASE_URL}/bookings/${userId}`,
-            { credentials: "include" });
+                { credentials: "include" });
             if (!response.ok) throw new Error("No bookings found");
             const result = await response.json();
             setBookings(result.data);
@@ -69,7 +66,6 @@ const Settings = () => {
             });
             if (!response.ok) throw new Error("Failed to delete booking");
 
-            // Remove deleted booking from state
             setBookings((prevBookings) => prevBookings.filter((booking) => booking._id !== id));
         } catch (err) {
             setError(err.message);
@@ -78,13 +74,10 @@ const Settings = () => {
         }
     };
 
-
-    // Handle form input change
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    // Update user data
     const handleUpdate = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -108,7 +101,6 @@ const Settings = () => {
         }
     };
 
-    // Delete user account
     const handleDelete = async () => {
         if (!window.confirm("Are you sure you want to delete your account?")) return;
         setLoading(true);
@@ -140,7 +132,7 @@ const Settings = () => {
             {loading && <p>Loading...</p>}
 
             {/* View Profile Button */}
-            <button onClick={handleViewProfile} className="bg-gray-500 text-white p-2 rounded w-full mb-4 hover:bg-gray-600 transition">
+            <button onClick={handleViewProfile} className="bg-gray-500 text-white p-2 rounded w-full hover:bg-gray-600 transition">
                 {user ? "Hide Profile" : "View My Profile"}
             </button>
 

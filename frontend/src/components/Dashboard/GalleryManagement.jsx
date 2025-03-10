@@ -66,7 +66,7 @@ const GalleryManagement = () => {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Upload failed");
+            if (!response.ok) throw new Error(data.message || "Upload failed - maxSize 10mbs");
 
             setUploadMessage("Image uploaded successfully!");
 

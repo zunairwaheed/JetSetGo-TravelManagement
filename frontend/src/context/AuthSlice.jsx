@@ -47,10 +47,7 @@ export const loginUser = createAsyncThunk(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
-<<<<<<< HEAD
-=======
-        credentials: "include", // Ensure cookies are sent
->>>>>>> cd83868 (Api's Integration)
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -59,16 +56,11 @@ export const loginUser = createAsyncThunk(
       if (!response.ok) {
         return rejectWithValue(data.message || "Login failed");
       }
-<<<<<<< HEAD
-      console.log("datadata",data);
-      const user = data.data;
-      if (!user || !user.username) throw new Error("Invalid user data received");
-      console.log("useruser",user);
-=======
 
-      const user = data.data;
+      const user = data.data; // ✅ Only declare it once
       if (!user || !user.username) throw new Error("Invalid user data received");
->>>>>>> cd83868 (Api's Integration)
+
+      console.log("User:", user);
 
       localStorage.setItem("user", JSON.stringify(user));
       return user;
@@ -78,10 +70,8 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-<<<<<<< HEAD
-=======
 
->>>>>>> cd83868 (Api's Integration)
+
 const authSlice = createSlice({
   name: "auth",
   initialState,

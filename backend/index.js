@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import routes from "./routes/routes.js";
-<<<<<<< HEAD
 import path from "path";
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -13,12 +12,6 @@ cloudinary.config({
   api_key: '187525565483722',
   api_secret: '2bEfvxVkAD3zxMj_6nGXvCNLF0E' // Click 'View API Keys' above to copy your API secret
 });
-
-=======
-import { v2 as cloudinary } from "cloudinary";
-// import path from "path";
-// import { fileURLToPath } from "url";
->>>>>>> cd83868 (Api's Integration)
 
 dotenv.config();
 
@@ -53,14 +46,11 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-<<<<<<< HEAD
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "backend", "uploads")));
-=======
 // app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/v1", routes);
->>>>>>> cd83868 (Api's Integration)
 
 
 app.listen(port, async () => {

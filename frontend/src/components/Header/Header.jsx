@@ -3,10 +3,7 @@ import { FaAlignJustify } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaPlaneDeparture } from "react-icons/fa6";
 import { IoMdArrowRoundBack } from "react-icons/io";
-<<<<<<< HEAD
-=======
 import { IoSettingsSharp } from "react-icons/io5";
->>>>>>> cd83868 (Api's Integration)
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../context/AuthSlice.jsx"; // Import Redux logout action
 

@@ -70,3 +70,21 @@ export const getAllUser = async (req, res) => {
         });
     }
 }
+
+export const getUserCount = async (req, res) => {
+    try {
+        const userCount = await User.estimatedDocumentCount()
+
+        res.status(200).json({
+            success: true,
+            message: "Successfull",
+            data: userCount,
+        });
+    }
+    catch (err) {
+        res.status(404).json({
+            success: false,
+            message: "Failed To Fetch",
+        });
+    }
+}

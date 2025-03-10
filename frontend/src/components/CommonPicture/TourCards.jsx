@@ -42,6 +42,7 @@ const TourCards = () => {
                         cdesc={item.desc}
                         cprice={item.price}
                         cBook={item.book}
+                        cfeatured={item.featured}
                     />
                 ))}
             </div>

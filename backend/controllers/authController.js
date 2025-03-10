@@ -60,12 +60,9 @@ export const login = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Login successful",
-<<<<<<< HEAD
             data: userData,  // Removed token from response
-=======
             token,
             data: userData,
->>>>>>> cd83868 (Api's Integration)
             role: user.role,
         });
 

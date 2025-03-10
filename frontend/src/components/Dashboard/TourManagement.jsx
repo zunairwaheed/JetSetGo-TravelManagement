@@ -1,5 +1,4 @@
-import React from 'react'
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetchAllTours from "../hooks/useFetchAllTours.js";
 
@@ -8,6 +7,8 @@ const URL = `${BASE_URL}/tours`;
 function TourManagement() {
     const { data: tours, error, loading } = useFetchAllTours(URL);
     const [selectedTour, setSelectedTour] = useState("");
+    const [showOnlyFeatured, setShowOnlyFeatured] = useState(false);
+
     const [formData, setFormData] = useState({
         imgUrl: "",
         city: "",
@@ -70,6 +71,7 @@ function TourManagement() {
             if (!response.ok) throw new Error("Failed to delete tour");
             alert("Tour deleted successfully!");
             setSelectedTour("");
+            window.location.reload();
         } catch (error) {
             console.error("Error deleting tour:", error);
             alert(error.message);
@@ -77,59 +79,68 @@ function TourManagement() {
     };
 
     return (
-        <>
-            <div className="my-5">
-                <div className="py-3">
-                    <h1 className="text-center font-bold text-xl lg:text-3xl">ADM<span className="text-main">IN DASH</span>BOARD</h1>
-                </div>
-                <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
-                    <h1 className="text-xl lg:text-2xl font-bold mb-4">Tour Management</h1>
-                    {loading && <p>Loading...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
+        <div className="my-5">
+            <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
+                <h1 className="text-xl lg:text-2xl font-bold mb-4">Tour Management</h1>
+                {loading && <p>Loading...</p>}
+                {error && <p className="text-red-500">{error}</p>}
 
-                    <select
-                        className="w-full p-2 border rounded mb-4"
-                        onChange={(e) => handleSelectTour(e.target.value)}
-                        value={selectedTour}
-                    >
-                        <option value="">Select a Tour</option>
-                        {tours.map((tour) => (
+                <label className="flex items-center mb-4 space-x-2">
+                    <input
+                        type="checkbox"
+                        checked={showOnlyFeatured}
+                        onChange={() => setShowOnlyFeatured(!showOnlyFeatured)}
+                    />
+                    <span>Show Only Featured Tours</span>
+                </label>
+
+                {/* Tour selection dropdown */}
+                <select
+                    className="w-full p-2 border rounded mb-4"
+                    onChange={(e) => handleSelectTour(e.target.value)}
+                    value={selectedTour}
+                >
+                    <option value="">Select a Tour</option>
+                    {tours
+                        .filter((tour) => !showOnlyFeatured || tour.featured)
+                        .map((tour) => (
                             <option key={tour._id} value={tour._id}>
                                 {tour.city} - {tour.country}
                             </option>
                         ))}
-                    </select>
+                </select>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <input type="text" name="imgUrl" value={formData.imgUrl} onChange={handleChange} placeholder="Image URL" className="w-full p-2 border rounded" />
-                        <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="w-full p-2 border rounded" />
-                        <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="w-full p-2 border rounded" />
-                        <input type="number" name="rating" value={formData.rating} onChange={handleChange} placeholder="Rating" className="w-full p-2 border rounded" />
-                        <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Price" className="w-full p-2 border rounded" />
-                        <input type="number" name="charges" value={formData.charges} onChange={handleChange} placeholder="Charges" className="w-full p-2 border rounded" />
-                        <input type="number" name="maxGroupSize" value={formData.maxGroupSize} onChange={handleChange} placeholder="Max Group Size" className="w-full p-2 border rounded" />
-                        <textarea name="desc" value={formData.desc} onChange={handleChange} placeholder="Description" className="w-full p-2 border rounded" />
-                        <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border rounded" />
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
-                            <span>Featured</span>
-                        </label>
+                {/* Tour form */}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input type="text" name="imgUrl" value={formData.imgUrl} onChange={handleChange} placeholder="Image URL" className="w-full p-2 border rounded" />
+                    <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="w-full p-2 border rounded" />
+                    <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="w-full p-2 border rounded" />
+                    <input type="number" name="rating" value={formData.rating} onChange={handleChange} placeholder="Rating" className="w-full p-2 border rounded" />
+                    <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Price" className="w-full p-2 border rounded" />
+                    <input type="number" name="charges" value={formData.charges} onChange={handleChange} placeholder="Charges" className="w-full p-2 border rounded" />
+                    <input type="number" name="maxGroupSize" value={formData.maxGroupSize} onChange={handleChange} placeholder="Max Group Size" className="w-full p-2 border rounded" />
+                    <textarea name="desc" value={formData.desc} onChange={handleChange} placeholder="Description" className="w-full p-2 border rounded" />
+                    <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border rounded" />
 
-                        <div className="flex space-x-2">
-                            <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600 transition">
-                                {selectedTour ? "Update" : "Create"}
+                    <label className="flex items-center space-x-2">
+                        <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
+                        <span>Featured</span>
+                    </label>
+
+                    <div className="flex space-x-2">
+                        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600 transition">
+                            {selectedTour ? "Update" : "Create"}
+                        </button>
+                        {selectedTour && (
+                            <button type="button" onClick={handleDelete} className="bg-red-500 text-white p-2 rounded w-full hover:bg-red-600 transition">
+                                Delete
                             </button>
-                            {selectedTour && (
-                                <button type="button" onClick={handleDelete} className="bg-red-500 text-white p-2 rounded w-full hover:bg-red-600 transition">
-                                    Delete
-                                </button>
-                            )}
-                        </div>
-                    </form>
-                </div>
+                        )}
+                    </div>
+                </form>
             </div>
-        </>
+        </div>
     );
 }
 
-export default TourManagement
+export default TourManagement;

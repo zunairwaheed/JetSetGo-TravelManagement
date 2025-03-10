@@ -97,36 +97,44 @@ export const getAllTour = async (req, res) => {
 }
 
 export const getTourBySearch = async (req, res) => {
-    const country = new RegExp(req.query.country, "i");
-    const maxGroupSize = parseInt(req.query.maxGroupSize);
-    const date = req.query.date ? new Date(req.query.date) : null;
-    const people = parseInt(req.query.people);
-
-    const filters = {
-        country,
-        maxGroupSize: { $gte: maxGroupSize },
-    };
-
-    if (date) {
-        filters.date = { $gte: date };
-    }
-
-    if (people) {
-        filters.maxGroupSize = { $gte: people };
-    }
-
     try {
+        const country = req.query.country ? new RegExp(req.query.country, "i") : null;
+        const maxGroupSize = req.query.maxGroupSize ? parseInt(req.query.maxGroupSize) : null;
+        const date = req.query.date ? new Date(req.query.date) : null;
+
+        let filters = {};
+
+        if (country) {
+            filters.country = country;
+        }
+        if (maxGroupSize) {
+            filters.maxGroupSize = { $gte: maxGroupSize };
+        }
+        if (date) {
+            filters.date = { $gte: date };
+        }
+
         const tours = await Tour.find(filters);
+
+        if (!tours.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No tours found matching the criteria.",
+                data: [],
+            });
+        }
+
         res.status(200).json({
             success: true,
             count: tours.length,
-            message: "Successful",
+            message: "Search successful",
             data: tours,
         });
     } catch (err) {
-        res.status(404).json({
+        res.status(500).json({
             success: false,
-            message: "Not Found",
+            message: "Server error. Please try again.",
+            error: err.message,
         });
     }
 };
@@ -134,7 +142,7 @@ export const getTourBySearch = async (req, res) => {
 
 export const getFeaturedTour = async (req, res) => {
     try {
-        const tours = await Tour.find({featured: true})
+        const tours = await Tour.find({ featured: true })
 
         res.status(200).json({
             success: true,
@@ -151,7 +159,7 @@ export const getFeaturedTour = async (req, res) => {
 }
 
 export const getTourCount = async (req, res) => {
-        try {
+    try {
         const tourCount = await Tour.estimatedDocumentCount()
 
         res.status(200).json({

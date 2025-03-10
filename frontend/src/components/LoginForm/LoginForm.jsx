@@ -19,10 +19,7 @@ const Login = () => {
         try {
             await dispatch(loginUser(data)).unwrap();
             navigate("/");
-<<<<<<< HEAD
-=======
             window.location.reload();
->>>>>>> cd83868 (Api's Integration)
         } catch (err) {
             console.error("Login failed:", err);
         }

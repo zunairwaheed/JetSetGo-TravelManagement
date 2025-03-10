@@ -66,3 +66,21 @@ export const deleteBooking = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error: err.message });
     }
 };
+
+export const getBookingCount = async (req, res) => {
+    try {
+        const bookingCount = await Booking.estimatedDocumentCount()
+
+        res.status(200).json({
+            success: true,
+            message: "Successfull",
+            data: bookingCount,
+        });
+    }
+    catch (err) {
+        res.status(404).json({
+            success: false,
+            message: "Failed To Fetch",
+        });
+    }
+}
