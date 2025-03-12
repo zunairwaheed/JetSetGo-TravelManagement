@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../context/AuthSlice.jsx";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -19,15 +21,22 @@ const Login = () => {
         try {
             await dispatch(loginUser(data)).unwrap();
             navigate("/");
-            window.location.reload();
+            toast.success("Login successful!", { position: "top-right" });
+            setTimeout(() => window.location.reload(), 1500);
+        
         } catch (err) {
+            toast.error("Login failed. Please try again.", { position: "top-right" });
             console.error("Login failed:", err);
         }
     };
 
-
     return (
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center relative ">
+            {(loading) && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                </div>
+            )}
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl font-bold text-center text-main mb-6">
                     Welcome Back!

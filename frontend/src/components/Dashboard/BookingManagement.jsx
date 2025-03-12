@@ -1,12 +1,8 @@
-import React from 'react'
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
-import useFetchAllTours from "../hooks/useFetchAllTours.js";
-import useFetch from "../hooks/useFetch.js";
-
-const URL = `${BASE_URL}/tours`;
-const USER_URL = `${BASE_URL}/users`;
-const DELETE_USER_URL = `${BASE_URL}/users`;
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DeleteModal from "../Common/DeleteModal.jsx";
 
 const BookingManagement = () => {
     const [bookings, setBookings] = useState([]);
@@ -15,8 +11,9 @@ const BookingManagement = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showAllBookings, setShowAllBookings] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
 
-    // Fetch all bookings (toggle functionality)
     const fetchAllBookings = async () => {
         if (showAllBookings) {
             setShowAllBookings(false);
@@ -34,14 +31,14 @@ const BookingManagement = () => {
             setShowAllBookings(true);
         } catch (err) {
             setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    // Fetch bookings by user ID
     const fetchBookingsByUserId = async () => {
-        if (!userId) return alert("Please enter a User ID");
+        if (!userId) return toast.warning("Please enter a User ID");
         setLoading(true);
         try {
             const response = await fetch(`${BASE_URL}/bookings/${userId}`, { credentials: "include" });
@@ -50,14 +47,14 @@ const BookingManagement = () => {
             setBookings(result.data);
         } catch (err) {
             setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    // Fetch single booking by booking ID
     const fetchBookingById = async () => {
-        if (!bookingId) return alert("Please enter a Booking ID");
+        if (!bookingId) return toast.warning("Please enter a Booking ID");
         setLoading(true);
         try {
             const response = await fetch(`${BASE_URL}/bookings/${bookingId}`, { credentials: "include" });
@@ -66,30 +63,38 @@ const BookingManagement = () => {
             setBookings([result.data]);
         } catch (err) {
             setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    // Delete booking
-    const deleteBooking = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this booking?")) return;
+    const handleDeleteClick = (booking) => {
+        setSelectedBooking(booking);
+        setModalOpen(true);
+    };
+
+    const deleteBooking = async () => {
+        if (!selectedBooking) return;
 
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${BASE_URL}/bookings/${id}`, {
+            const response = await fetch(`${BASE_URL}/bookings/${selectedBooking._id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
             if (!response.ok) throw new Error("Failed to delete booking");
 
-            // Remove deleted booking from state
-            setBookings((prevBookings) => prevBookings.filter((booking) => booking._id !== id));
+            setBookings((prevBookings) => prevBookings.filter((booking) => booking._id !== selectedBooking._id));
+            toast.error("Booking deleted successfully!");
         } catch (err) {
             setError(err.message);
+            toast.error("Failed to delete booking");
         } finally {
             setLoading(false);
+            setModalOpen(false);
+            setSelectedBooking(null);
         }
     };
 
@@ -97,7 +102,11 @@ const BookingManagement = () => {
         <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
             <h1 className="text-2xl font-bold mb-4">Booking Management</h1>
             {error && <p className="text-red-500">{error}</p>}
-            {loading && <p>Loading...</p>}
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                </div>
+            )}
 
             <div className="flex space-x-2 mb-4">
                 <input
@@ -105,9 +114,11 @@ const BookingManagement = () => {
                     placeholder="Enter User ID"
                     value={userId}
                     onChange={(e) => setUserId(e.target.value)}
-                    className="p-2 border rounded w-full"
+                    className="p-2 border rounded w-96"
                 />
-                <button onClick={fetchBookingsByUserId} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Get User Bookings</button>
+                <button onClick={fetchBookingsByUserId} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                    Get User Bookings
+                </button>
             </div>
 
             <div className="flex space-x-2 mb-4">
@@ -116,16 +127,17 @@ const BookingManagement = () => {
                     placeholder="Enter Booking ID"
                     value={bookingId}
                     onChange={(e) => setBookingId(e.target.value)}
-                    className="p-2 border rounded w-full"
+                    className="p-2 border rounded w-96"
                 />
-                <button onClick={fetchBookingById} className="bg-green-500 text-white p-2 rounded hover:bg-green-600">Get Booking</button>
+                <button onClick={fetchBookingById} className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                    Get Booking
+                </button>
             </div>
 
-            <button onClick={fetchAllBookings} className="bg-gray-500 text-white p-2 rounded w-full mb-4 hover:bg-gray-600">
+            <button onClick={fetchAllBookings} className="bg-gray-500 text-white p-2 rounded w-56 mb-4 hover:bg-gray-600">
                 {showAllBookings ? "Hide All Bookings" : "View All Bookings"}
             </button>
 
-            {/* Show bookings if available */}
             {bookings.length > 0 && (
                 <div className="mt-4 p-4 bg-gray-100 rounded">
                     <h2 className="text-xl font-semibold mb-2">Bookings</h2>
@@ -138,7 +150,7 @@ const BookingManagement = () => {
                                 <strong>Booking Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}
                                 <br />
                                 <button
-                                    onClick={() => deleteBooking(booking._id)}
+                                    onClick={() => handleDeleteClick(booking)}
                                     className="mt-2 bg-red-500 text-white p-1 rounded hover:bg-red-600 transition"
                                 >
                                     Delete
@@ -148,8 +160,15 @@ const BookingManagement = () => {
                     </ul>
                 </div>
             )}
+
+            <DeleteModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={deleteBooking}
+                itemName={selectedBooking?.tourName || "this booking"}
+            />
         </div>
     );
 };
 
-export default BookingManagement
+export default BookingManagement;

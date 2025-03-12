@@ -43,21 +43,21 @@ const GalleryImages = () => {
             setUploadMessage("Please select an image first.");
             return;
         }
-    
+
         const formData = new FormData();
         formData.append("galleryImage", file);
-        
+
         try {
             const response = await fetch(`${BASE_URL}/gallery/upload`, {
                 method: "POST",
                 body: formData,
             });
-    
+
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || "Upload failed");
-    
+
             setUploadMessage("Image uploaded successfully!");
-    
+
             // Refresh the gallery
             const updatedResponse = await fetch(`${BASE_URL}/gallery`);
             const updatedData = await updatedResponse.json();
@@ -66,7 +66,7 @@ const GalleryImages = () => {
             setUploadMessage(error.message);
         }
     };
-    
+
 
     const handleDelete = async (id) => {
         try {
@@ -105,7 +105,11 @@ const GalleryImages = () => {
                 </div>
 
 
-                {loading && <p className="text-center">Loading images...</p>}
+                {loading && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                    </div>
+                )}
                 {error && <p className="text-center text-red-500">{error}</p>}
 
                 {/* Mobile Gallery View */}

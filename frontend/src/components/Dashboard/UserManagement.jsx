@@ -1,9 +1,11 @@
-import React from 'react'
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetch from "../hooks/useFetch.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DeleteModal from "../Common/DeleteModal"; // Import the modal
 
-const URL = `${BASE_URL}/tours`;
+
 const USER_URL = `${BASE_URL}/users`;
 const DELETE_USER_URL = `${BASE_URL}/users`;
 
@@ -11,10 +13,7 @@ function UserManagement() {
     const { data: users = [], error, loading } = useFetch(USER_URL);
     const [selectedUser, setSelectedUser] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
-
-    console.log("Fetched Users:", users);
-    console.log("Error:", error);
-    console.log("Loading:", loading);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
 
     const handleSelectUser = (id) => {
         setSelectedUser(id);
@@ -22,12 +21,10 @@ function UserManagement() {
 
     const handleDeleteUser = async () => {
         if (!selectedUser) {
-            alert("Please select a user to delete");
+            toast.warning("Please select a user to delete.");
             return;
         }
 
-        const confirmDelete = window.confirm("Are you sure you want to delete this user?");
-        if (!confirmDelete) return;
 
         setIsDeleting(true);
         try {
@@ -39,13 +36,14 @@ function UserManagement() {
 
             const result = await response.json();
             if (response.ok) {
-                alert("User deleted successfully");
-                window.location.reload();
+                toast.error("User deleted successfully!");
+                setTimeout(() => window.location.reload(), 1500);
             } else {
-                alert(result.message || "Failed to delete user");
+                toast.error(result.message || "Failed to delete user");
             }
+            setIsDeleteModalOpen(false); // Close modal after deletion
         } catch (error) {
-            alert("Error deleting user");
+            toast.error("Error deleting user");
             console.error("Delete Error:", error);
         }
         setIsDeleting(false);
@@ -55,7 +53,11 @@ function UserManagement() {
         <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
             <h1 className="text-xl lg:text-2xl font-bold mb-4">User Management</h1>
 
-            {loading && <p>Loading...</p>}
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                </div>
+            )}
             {error && <p className="text-red-500">{error}</p>}
 
             <select
@@ -76,14 +78,20 @@ function UserManagement() {
             </select>
 
             <button
-                onClick={handleDeleteUser}
+                onClick={() => setIsDeleteModalOpen(true)}
                 className="bg-red-500 text-white px-4 py-2 rounded disabled:opacity-50"
                 disabled={!selectedUser || isDeleting}
             >
                 {isDeleting ? "Deleting..." : "Delete User"}
             </button>
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDeleteUser}
+                itemName={``}
+            />
         </div>
     );
 }
 
-export default UserManagement
+export default UserManagement;

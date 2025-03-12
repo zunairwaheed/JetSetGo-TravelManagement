@@ -33,33 +33,40 @@ const Dashboard = () => {
     }, []);
 
     const renderCard = (icon, title, key) => (
-        <Card 
-            icon={icon} 
-            title={title} 
-            value={loading ? 'Loading...' : error ? 'Error' : counts[key]} 
+        <Card
+            icon={icon}
+            title={title}
+            value={loading ? (
+                <div className="flex justify-center items-center">
+                    <div className="animate-spin rounded-full h-3 w-3 border-t-4 border-gray-600"></div>
+                </div>
+            ) : error ? 'Error' : counts[key]}
         />
     );
 
+
     return (
-        <div className="grow p-8">
-            <h2 className="text-2xl font-bold mb-4"><span className="text-main">Dash</span>board</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {renderCard(<FaShoppingCart />, 'Bookings', 'bookings')}
-                {renderCard(<FaBox />, 'Tours', 'tours')}
-                {renderCard(<FaUsers />, 'Users', 'users')}
-                <Card icon={<FaCog />} title="Settings" value="11" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white p-4 dark:bg-gray-800 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold mb-4">Sales Data</h3>
-                    <Line data={dataLine} />
+        <>
+            <div className="grow p-8">
+                <h2 className="text-2xl font-bold mb-4"><span className="text-main">Dash</span>board</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {renderCard(<FaShoppingCart />, 'Bookings', 'bookings')}
+                    {renderCard(<FaBox />, 'Tours', 'tours')}
+                    {renderCard(<FaUsers />, 'Users', 'users')}
+                    <Card icon={<FaCog />} title="Settings" value="11" />
                 </div>
-                <div className="bg-white p-4 dark:bg-gray-800 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold mb-4">Products Data</h3>
-                    <Bar data={dataBar} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="bg-white p-4 dark:bg-gray-800 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold mb-4">Sales Data</h3>
+                        <Line data={dataLine} />
+                    </div>
+                    <div className="bg-white p-4 dark:bg-gray-800 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold mb-4">Products Data</h3>
+                        <Bar data={dataBar} />
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

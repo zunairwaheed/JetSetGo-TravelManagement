@@ -17,7 +17,7 @@ const TourCards = () => {
         const pages = Math.ceil(tourCount / limit);
         setPageCount(pages);
         window.scrollTo(0,0);
-    }, [page,tourCount, tours]); 
+    }, [page, tourCount, tours]); 
 
     // Handle page change
     const handlePageChange = (newPage) => {
@@ -28,10 +28,16 @@ const TourCards = () => {
 
     return (
         <div>
+            {/* Show Loading Spinner when fetching data */}
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                </div>
+            )}
+
             {/* Display Tour Cards */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 mx-10 md:mx-20 lg:mx-36 xl:mx-[280px] py-10">
-                {loading && <h4>Loading...</h4>}
-                {error && <h4>{error}</h4>}
+                {error && <h4 className="text-red-500 text-center">{error}</h4>}
                 {!loading && !error && tours.map((item) => (
                     <Card
                         key={item._id}

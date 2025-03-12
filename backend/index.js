@@ -10,19 +10,10 @@ import { v2 as cloudinary } from 'cloudinary';
 cloudinary.config({
   cloud_name: 'dvoitkw0q',
   api_key: '187525565483722',
-  api_secret: '2bEfvxVkAD3zxMj_6nGXvCNLF0E' // Click 'View API Keys' above to copy your API secret
+  api_secret: '2bEfvxVkAD3zxMj_6nGXvCNLF0E'
 });
 
 dotenv.config();
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-cloudinary.config({ 
-  cloud_name: 'dvoitkw0q', 
-  api_key: '187525565483722', 
-  api_secret: '2bEfvxVkAD3zxMj_6nGXvCNLF0E'
-});
 
 const app = express();
 const port = process.env.PORT || 8000;

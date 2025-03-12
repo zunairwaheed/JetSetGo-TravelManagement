@@ -3,7 +3,7 @@ import { FaFacebook, FaPlaneDeparture } from "react-icons/fa";
 import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitterSquare } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
-
+import logo from "../../assets/logo.png"
 
 const Footer = () => {
     return (
@@ -13,10 +13,11 @@ const Footer = () => {
                     <div className="flex flex-col md:flex-row pb-3">
                         <div className="md:w-1/2">
                             <div className="flex gap-2 justify-center md:justify-start items-center">
-                                <p className="text-md md:text-lg lg:text-xl xl:text-2xl font-bold">
+                                {/* <p className="text-md md:text-lg lg:text-xl xl:text-2xl font-bold">
                                 Jet<span className='text-main'>Set</span>Go
                                 </p>
-                                <FaPlaneDeparture className='hidden md:block' color="#FA7436" size="30px" />
+                                <FaPlaneDeparture className='hidden md:block' color="#FA7436" size="30px" /> */}
+                                <img className='w-20 lg:w-24' src={logo} alt="" />
                             </div>
 
                             <div className="text-center md:text-start py-3">

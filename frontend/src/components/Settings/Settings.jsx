@@ -141,6 +141,14 @@ const Settings = () => {
                 <form onSubmit={handleUpdate} className="space-y-4">
                     <input
                         type="text"
+                        name="User Id"
+                        value={user._id}
+                        onChange={handleChange}
+                        placeholder="User Id"
+                        className="w-full p-2 border rounded"
+                    />
+                    <input
+                        type="text"
                         name="username"
                         value={user.username}
                         onChange={handleChange}

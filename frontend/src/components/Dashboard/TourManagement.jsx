@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetchAllTours from "../hooks/useFetchAllTours.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DeleteModal from "../Common/DeleteModal"; // Import the modal
 
 const URL = `${BASE_URL}/tours`;
 
@@ -8,6 +11,7 @@ function TourManagement() {
     const { data: tours, error, loading } = useFetchAllTours(URL);
     const [selectedTour, setSelectedTour] = useState("");
     const [showOnlyFeatured, setShowOnlyFeatured] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
 
     const [formData, setFormData] = useState({
         imgUrl: "",
@@ -44,37 +48,37 @@ function TourManagement() {
         try {
             const response = await fetch(endpoint, {
                 method,
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
                 credentials: "include",
             });
 
             if (!response.ok) throw new Error("Failed to save tour");
 
-            alert(`Tour ${selectedTour ? "updated" : "created"} successfully!`);
-            window.location.reload();
+            toast.success(`Tour ${selectedTour ? "updated" : "created"} successfully!`);
+            setTimeout(() => window.location.reload(), 1500);
         } catch (error) {
-            console.error("Error saving tour:", error);
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
     const handleDelete = async () => {
         if (!selectedTour) return;
+
         try {
             const response = await fetch(`${URL}/${selectedTour}`, {
                 method: "DELETE",
                 credentials: "include"
             });
+
             if (!response.ok) throw new Error("Failed to delete tour");
-            alert("Tour deleted successfully!");
+
+            toast.error("Tour deleted successfully!");
             setSelectedTour("");
-            window.location.reload();
+            setIsDeleteModalOpen(false); // Close modal after deletion
+            setTimeout(() => window.location.reload(), 1500);
         } catch (error) {
-            console.error("Error deleting tour:", error);
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -82,7 +86,11 @@ function TourManagement() {
         <div className="my-5">
             <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
                 <h1 className="text-xl lg:text-2xl font-bold mb-4">Tour Management</h1>
-                {loading && <p>Loading...</p>}
+                {loading && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                    </div>
+                )}
                 {error && <p className="text-red-500">{error}</p>}
 
                 <label className="flex items-center mb-4 space-x-2">
@@ -94,7 +102,6 @@ function TourManagement() {
                     <span>Show Only Featured Tours</span>
                 </label>
 
-                {/* Tour selection dropdown */}
                 <select
                     className="w-full p-2 border rounded mb-4"
                     onChange={(e) => handleSelectTour(e.target.value)}
@@ -110,7 +117,6 @@ function TourManagement() {
                         ))}
                 </select>
 
-                {/* Tour form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input type="text" name="imgUrl" value={formData.imgUrl} onChange={handleChange} placeholder="Image URL" className="w-full p-2 border rounded" />
                     <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="w-full p-2 border rounded" />
@@ -132,13 +138,25 @@ function TourManagement() {
                             {selectedTour ? "Update" : "Create"}
                         </button>
                         {selectedTour && (
-                            <button type="button" onClick={handleDelete} className="bg-red-500 text-white p-2 rounded w-full hover:bg-red-600 transition">
+                            <button
+                                type="button"
+                                onClick={() => setIsDeleteModalOpen(true)}
+                                className="bg-red-500 text-white p-2 rounded w-full hover:bg-red-600 transition"
+                            >
                                 Delete
                             </button>
                         )}
                     </div>
                 </form>
             </div>
+
+            {/* Delete Modal */}
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                itemName={`${formData.city}, ${formData.country}`}
+            />
         </div>
     );
 }
