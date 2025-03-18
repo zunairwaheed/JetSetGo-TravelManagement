@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../utils/config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import DeleteModal from "../Common/DeleteModal.jsx";
+import { FiUser, FiBook, FiTrash, FiEdit, FiDollarSign, FiLock } from "react-icons/fi";
+import { IoHome } from "react-icons/io5";
+import { MdTour } from "react-icons/md";
+import { FaUserCheck } from "react-icons/fa";
+import { RiGalleryFill } from "react-icons/ri";
+import { SlCalender } from "react-icons/sl";
+import ChangePassword from "../../pages/changePassword.jsx";
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -8,77 +17,50 @@ const Settings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState("profile");
+    const [isBookingDeleteModalOpen, setIsBookingDeleteModalOpen] = useState(false);
+    const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
+    const [bookingToDelete, setBookingToDelete] = useState(null);
+    const [accountToDelete, setAccountToDelete] = useState(null);
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const userId = storedUser?._id;
 
+    useEffect(() => {
+        if (activeTab === "profile") handleViewProfile();
+        if (activeTab === "bookings") handleViewBookings();
+    }, [activeTab]);
+
     const handleViewProfile = async () => {
-        if (user) {
-            setUser();
-            return;
-        }
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${BASE_URL}/users/${userId}`, {
-                credentials: "include",
-            });
+            const response = await fetch(`${BASE_URL}/users/${userId}`, { credentials: "include" });
             if (!response.ok) throw new Error("Failed to fetch user data");
             const result = await response.json();
             setUser(result.data);
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     };
 
     const handleViewBookings = async () => {
-        if (bookings.length > 0) {
-            setBookings([]);
-            return;
-        }
-
-        if (!userId) return alert("Please enter a User ID");
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/bookings/${userId}`,
-                { credentials: "include" });
-            if (!response.ok) throw new Error("No bookings found");
+            const response = await fetch(`${BASE_URL}/bookings/${userId}`, { credentials: "include" });
+            if (!response.ok) throw new Error("No Bookings Found");
             const result = await response.json();
             setBookings(result.data);
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const deleteBooking = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this booking?")) return;
-
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await fetch(`${BASE_URL}/bookings/${id}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-            if (!response.ok) throw new Error("Failed to delete booking");
-
-            setBookings((prevBookings) => prevBookings.filter((booking) => booking._id !== id));
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
-    };
-
-    const handleUpdate = async (e) => {
+    const handleUpdateProfile = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
@@ -89,22 +71,28 @@ const Settings = () => {
                 body: JSON.stringify(user),
                 credentials: "include",
             });
-            if (!response.ok) throw new Error("Failed to update user");
+
+            if (!response.ok) throw new Error("Failed to update profile");
             const updatedUser = await response.json();
             localStorage.setItem("user", JSON.stringify(updatedUser.data));
-            alert("Profile updated successfully!");
-            window.location.reload();
+            toast.success("Profile updated successfully!");
+            setTimeout(() => {
+                window.location.reload()
+            }, 1500);
         } catch (err) {
             setError(err.message);
+            toast.error("Error updating profile!");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDelete = async () => {
-        if (!window.confirm("Are you sure you want to delete your account?")) return;
+    const handleDeleteAccount = async () => {
+        if (!userId) return toast.error("User not found");
+
+        // if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
+
         setLoading(true);
-        setError(null);
         try {
             const response = await fetch(`${BASE_URL}/users/${userId}`, {
                 method: "DELETE",
@@ -114,112 +102,169 @@ const Settings = () => {
             if (!response.ok) throw new Error("Failed to delete user");
 
             localStorage.removeItem("user");
-            alert("Account deleted successfully!");
             navigate("/");
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 1000);
+            toast.success("Account deleted successfully!");
         } catch (err) {
             setError(err.message);
+            toast.error("Error deleting account!");
         } finally {
             setLoading(false);
+            window.location.reload()
+            setIsBookingAccountModalOpen(false);
+        }
+    };
+
+    const deleteBooking = async (id) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${BASE_URL}/bookings/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            if (!response.ok) throw new Error("Failed to delete booking");
+
+            setBookings(bookings.filter((booking) => booking._id !== id));
+            toast.success("Booking deleted successfully!");
+        } catch (err) {
+            toast.error(err.message);
+        } finally {
+            setLoading(false);
+            setIsBookingDeleteModalOpen(false);
+        }
+    };
+
+    const handlePayNow = async (booking) => {
+        try {
+            const response = await fetch(`${BASE_URL}/payments/pay`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ booking }),
+                credentials: "include",
+            });
+
+            if (!response.ok) throw new Error("Failed to create Stripe session");
+            const { url } = await response.json();
+            window.location.href = url;
+        } catch (error) {
+            toast.error(error.message);
         }
     };
 
     return (
-        <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
-            <h1 className="text-2xl font-bold mb-4">Settings</h1>
+        <div className="flex h-screen my-10">
+            {/* Sidebar */}
+            <div className="w-64 bg-gray-800 text-white p-6 hidden md:block">
+                <h2 className="text-2xl font-bold mb-6">Settings</h2>
+                <ul>
+                    <li className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "profile" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("profile")}>
+                        <FiUser /> My Profile
+                    </li>
+                    <li className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "bookings" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("bookings")}>
+                        <FiBook /> My Bookings
+                    </li>
+                    <li className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "change-password" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                        onClick={() => setActiveTab("change-password")}>
+                        <FiLock /> Change Password
+                    </li>
+                    <li className="p-3 cursor-pointer flex items-center gap-2 hover:bg-red-600 text-red-300"
+                        onClick={() => {
+                            setAccountToDelete(userId); // Set userId before opening modal
+                            setIsAccountDeleteModalOpen(true);
+                        }}>
+                        <FiTrash /> Delete Account
+                    </li>
 
-            {error && <p className="text-red-500">{error}</p>}
-            {loading && <p>Loading...</p>}
+                </ul>
+            </div>
 
-            {/* View Profile Button */}
-            <button onClick={handleViewProfile} className="bg-gray-500 text-white p-2 rounded w-full hover:bg-gray-600 transition">
-                {user ? "Hide Profile" : "View My Profile"}
-            </button>
+            {/* Content */}
+            <div className="flex-1 p-6">
+                {loading && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
+                    </div>)
+                }
+                {error && <div className="text-red-500">{error}</div>}
 
-            {/* Show user details if available */}
-            {user && (
-                <form onSubmit={handleUpdate} className="space-y-4">
-                    <input
-                        type="text"
-                        name="User Id"
-                        value={user._id}
-                        onChange={handleChange}
-                        placeholder="User Id"
-                        className="w-full p-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        name="username"
-                        value={user.username}
-                        onChange={handleChange}
-                        placeholder="Username"
-                        className="w-full p-2 border rounded"
-                    />
-                    <input
-                        type="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        placeholder="Email"
-                        className="w-full p-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        name="role"
-                        value={user.role}
-                        onChange={handleChange}
-                        placeholder="Role"
-                        className="w-full p-2 border rounded"
-                    />
+                {activeTab === "profile" && user && (
+                    <form onSubmit={handleUpdateProfile} className="bg-white p-6 shadow-md rounded">
+                        <h3 className="text-xl font-bold mb-4">Update Profile</h3>
+                        <input type="text" name="username" value={user.username} onChange={(e) => setUser({ ...user, username: e.target.value })} className="w-full p-2 border rounded mb-2" />
+                        <input type="email" name="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} className="w-full p-2 border rounded mb-2" />
+                        <input type="text" name="role" value={user.role} onChange={(e) => setUser({ ...user, role: e.target.value })} className="w-full p-2 border rounded mb-2" />
+                        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600">
+                            <FiEdit className="inline-block mr-2" /> Update Profile
+                        </button>
+                    </form>
+                )}
 
-                    {/* Update Profile Button */}
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600 transition">
-                        Update Profile
-                    </button>
-                </form>
-            )}
+                {activeTab === "bookings" && (
+                    <div className="bg-white p-6 shadow-md rounded">
+                        <h3 className="text-xl font-bold">My Bookings</h3>
 
-            {/* View Bookings Button */}
-            <button
-                onClick={handleViewBookings}
-                className="bg-green-500 text-white p-2 rounded w-full mt-4 hover:bg-green-600 transition"
-            >
-                {bookings.length > 0 ? "Hide My Bookings" : "View My Bookings"}
-            </button>
+                        {bookings.length > 0 ? (
+                            <ul>
+                                {bookings.map((booking) => (
+                                    <li key={booking._id} className="p-4 border-b">
+                                        <div>
+                                            <p><strong>Tour:</strong> {booking.tourName}</p>
+                                            <p><strong>Contact:</strong> {booking.phone}</p>
+                                            <p><strong>People:</strong> {booking.guestSize}</p>
+                                            <p><strong>Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}</p>
+                                            <p><strong>Status:</strong> {booking.status}</p>
+                                        </div>
+                                        <div className="flex gap-2 pt-2">
+                                            <button onClick={() => handlePayNow(booking)} className="flex items-center bg-green-500 text-white p-2 rounded">
+                                                <div><FiDollarSign /></div>
+                                                <div>PayNow</div>
+                                            </button>
+                                            <button onClick={() => { setBookingToDelete(booking._id); setIsBookingDeleteModalOpen(true); }} className="bg-red-500 text-white p-2 rounded">
+                                                <FiTrash />
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500 text-center mt-4">No bookings found.</p>
+                        )}
+                    </div>
+                )}
 
-
-            {/* Show user bookings */}
-            {bookings.length > 0 && (
-                <div className="mt-4 p-4 bg-gray-100 rounded">
-                    <h2 className="text-xl font-semibold mb-2">My Bookings</h2>
-                    <ul className="space-y-4">
-                        {bookings.map((booking) => (
-                            <li key={booking._id} className="p-4 border rounded bg-white shadow">
-                                <p><strong>Id:</strong> {booking._id}</p>
-                                <p><strong>Tour:</strong> {booking.tourName}</p>
-                                <p><strong>User:</strong> {booking.userName} ({booking.userEmail})</p>
-                                <p><strong>Guests:</strong> {booking.guestSize}</p>
-                                <p><strong>Phone:</strong> {booking.phone}</p>
-                                <p><strong>Booking Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}</p>
-                                <p><strong>Created At:</strong> {new Date(booking.createdAt).toLocaleDateString()}</p>
-                                <button
-                                    onClick={() => deleteBooking(booking._id)}
-                                    className="mt-2 bg-red-500 text-white p-1 rounded hover:bg-red-600 transition"
-                                >
-                                    Delete
-                                </button>
-                            </li>
-
-                        ))}
-                    </ul>
-                </div>
-            )}
+                {activeTab === "change-password" && <ChangePassword />}
 
 
-            {/* Delete Account Button */}
-            <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded w-full mt-4 hover:bg-red-600 transition">
-                Delete Account
-            </button>
+
+                {/* Booking Delete Modal */}
+                <DeleteModal
+                    isOpen={isBookingDeleteModalOpen}
+                    onClose={() => setIsBookingDeleteModalOpen(false)}
+                    onConfirm={() => deleteBooking(bookingToDelete)}
+                    itemName="this booking"
+                />
+
+                {/* Account Delete Modal */}
+                <DeleteModal
+                    isOpen={isAccountDeleteModalOpen}
+                    onClose={() => setIsAccountDeleteModalOpen(false)}
+                    onConfirm={handleDeleteAccount}
+                    itemName="this account"
+                />
+
+
+            </div>
+            {/* Bottom Navigation for Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white flex justify-around p-3 md:hidden">
+                <Link className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "profile" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("profile")}><FaUserCheck /></Link>
+                <Link className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "bookings" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("bookings")}><SlCalender /></Link>
+                <Link className="p-3 cursor-pointer flex items-center gap-2 hover:bg-red-600 text-red-300"
+                    onClick={() => {
+                        setAccountToDelete(userId); // Set userId before opening modal
+                        setIsDeleteModalOpen(true);
+                    }}><FiTrash /></Link>
+            </div>
         </div>
     );
 };

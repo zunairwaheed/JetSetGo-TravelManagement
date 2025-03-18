@@ -1,4 +1,6 @@
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import Booking from "../models/Bookings.js";
 
 export const updateUser = async (req, res) => {
     const id = req.params.id
@@ -21,6 +23,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const id = req.params.id
     try {
+        await Booking.deleteMany({ userId: id });
         await User.findByIdAndDelete(id)
         res.status(200).json({
             success: true,
@@ -88,3 +91,34 @@ export const getUserCount = async (req, res) => {
         });
     }
 }
+
+export const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const userId = req.params.id;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized request" });
+        }
+
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Incorrect old password" });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update password", error: error.message });
+    }
+};

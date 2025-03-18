@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetchAllTours from "../hooks/useFetchAllTours.js";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import DeleteModal from "../Common/DeleteModal"; // Import the modal
 
 const URL = `${BASE_URL}/tours`;

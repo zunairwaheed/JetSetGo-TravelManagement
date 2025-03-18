@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import DeleteModal from "../Common/DeleteModal.jsx";
 
 const BookingManagement = () => {
@@ -99,8 +98,8 @@ const BookingManagement = () => {
     };
 
     return (
-        <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
-            <h1 className="text-2xl font-bold mb-4">Booking Management</h1>
+        <div className="p-4 md:p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
+            <h1 className="text-xl md:text-2xl font-bold mb-4 text-center md:text-start">Booking Management</h1>
             {error && <p className="text-red-500">{error}</p>}
             {loading && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
@@ -108,50 +107,50 @@ const BookingManagement = () => {
                 </div>
             )}
 
-            <div className="flex space-x-2 mb-4">
+            <div className="flex flex-col md:flex-row gap-2 mb-4">
                 <input
                     type="text"
                     placeholder="Enter User ID"
                     value={userId}
                     onChange={(e) => setUserId(e.target.value)}
-                    className="p-2 border rounded w-96"
+                    className="p-2 border rounded w-full md:w-96"
                 />
-                <button onClick={fetchBookingsByUserId} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                <button onClick={fetchBookingsByUserId} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full md:w-auto">
                     Get User Bookings
                 </button>
             </div>
 
-            <div className="flex space-x-2 mb-4">
+            <div className="flex flex-col md:flex-row gap-2 mb-4">
                 <input
                     type="text"
                     placeholder="Enter Booking ID"
                     value={bookingId}
                     onChange={(e) => setBookingId(e.target.value)}
-                    className="p-2 border rounded w-96"
+                    className="p-2 border rounded w-full md:w-96"
                 />
-                <button onClick={fetchBookingById} className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                <button onClick={fetchBookingById} className="bg-green-500 text-white p-2 rounded hover:bg-green-600 w-full md:w-auto">
                     Get Booking
                 </button>
             </div>
 
-            <button onClick={fetchAllBookings} className="bg-gray-500 text-white p-2 rounded w-56 mb-4 hover:bg-gray-600">
+            <button onClick={fetchAllBookings} className="bg-gray-500 text-white p-2 rounded w-full md:w-56 mb-4 hover:bg-gray-600">
                 {showAllBookings ? "Hide All Bookings" : "View All Bookings"}
             </button>
 
             {bookings.length > 0 && (
                 <div className="mt-4 p-4 bg-gray-100 rounded">
                     <h2 className="text-xl font-semibold mb-2">Bookings</h2>
-                    <ul className="list-disc pl-4">
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {bookings.map((booking) => (
-                            <li key={booking._id} className="mb-2">
-                                <strong>Tour:</strong> {booking.tourName} <br />
-                                <strong>User:</strong> {booking.userName} ({booking.userEmail}) <br />
-                                <strong>Guests:</strong> {booking.guestSize} | <strong>Phone:</strong> {booking.phone} <br />
-                                <strong>Booking Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}
-                                <br />
+                            <li key={booking._id} className="p-4 bg-white shadow-md rounded">
+                                <p><strong>Tour:</strong> {booking.tourName}</p>
+                                <p><strong>User:</strong> {booking.userName} ({booking.userEmail})</p>
+                                <p><strong>Guests:</strong> {booking.guestSize} | <strong>Phone:</strong> {booking.phone}</p>
+                                <p><strong>Booking Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}</p>
+                                <p><strong>Status:</strong> {booking.status}</p>
                                 <button
                                     onClick={() => handleDeleteClick(booking)}
-                                    className="mt-2 bg-red-500 text-white p-1 rounded hover:bg-red-600 transition"
+                                    className="mt-2 bg-red-500 text-white p-1 rounded hover:bg-red-600 w-full"
                                 >
                                     Delete
                                 </button>

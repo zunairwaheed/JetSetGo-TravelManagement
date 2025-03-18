@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetch from "../hooks/useFetch.js";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import DeleteModal from "../Common/DeleteModal"; // Import the modal
 
 
@@ -24,8 +23,7 @@ function UserManagement() {
             toast.warning("Please select a user to delete.");
             return;
         }
-
-
+    
         setIsDeleting(true);
         try {
             const response = await fetch(`${DELETE_USER_URL}/${selectedUser}`, {
@@ -33,22 +31,36 @@ function UserManagement() {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include"
             });
-
+    
             const result = await response.json();
+    
             if (response.ok) {
-                toast.error("User deleted successfully!");
-                setTimeout(() => window.location.reload(), 1500);
+                toast.success("User deleted successfully!");
+    
+                // Get the logged-in user from localStorage
+                const storedUser = JSON.parse(localStorage.getItem("user"));
+    
+                // Check if the deleted user is the logged-in user
+                if (storedUser && storedUser._id === selectedUser) {
+                    // Logout the user by removing stored data
+                    localStorage.removeItem("user");
+                    setTimeout(() => {
+                        window.location.href = "/"; // Redirect to login page
+                    }, 1500);
+                } else {
+                    setTimeout(() => window.location.reload(), 1500);
+                }
             } else {
                 toast.error(result.message || "Failed to delete user");
             }
-            setIsDeleteModalOpen(false); // Close modal after deletion
+            setIsDeleteModalOpen(false);
         } catch (error) {
             toast.error("Error deleting user");
             console.error("Delete Error:", error);
         }
         setIsDeleting(false);
     };
-
+    
     return (
         <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
             <h1 className="text-xl lg:text-2xl font-bold mb-4">User Management</h1>

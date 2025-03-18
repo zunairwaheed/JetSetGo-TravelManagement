@@ -1,22 +1,80 @@
 import Booking from "../models/Bookings.js";
 
-export const createBooking = async (req, res) => {
-    const newBooking = new Booking(req.body);
+export const updateBookingStatus = async (req, res) => {
+    try {
+        const { sessionId } = req.body;
+        if (!sessionId) return res.status(400).json({ error: "Session ID is required" });
+
+
+        const booking = await Booking.findOne({ stripeSessionId: sessionId });
+
+        if (!booking) {
+            console.error("Booking not found for sessionId:", sessionId);
+            return res.status(404).json({ error: "Booking not found" });
+        }
+
+        booking.status = "paid";
+        await booking.save();
+
+        res.status(200).json({ message: "Booking status updated successfully" });
+
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update booking status" });
+    }
+};
+
+
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params;
 
     try {
-        const savedBooking = await newBooking.save();
-        res.status(200).json({ success: true, message: "Your tour is Booked", data: savedBooking });
+        await Booking.deleteMany({ userId: id });
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.status(200).json({ success: true, message: "User and related bookings deleted successfully" });
     } catch (err) {
-        console.error("Booking Creation Error:", err);
+        res.status(500).json({ success: false, message: "Server error", error: err.message });
+    }
+};
+
+// export const createBooking = async (req, res) => {
+//     const newBooking = new Booking(req.body);
+
+//     try {
+//         const savedBooking = await newBooking.save();
+//         res.status(200).json({ success: true, message: "Your tour is Booked", data: savedBooking });
+//     } catch (err) {
+//         console.error("Booking Creation Error:", err);
+//         res.status(500).json({ success: false, message: err.message });
+//     }
+// };
+
+export const createBooking = async (req, res) => {
+    try {
+        const newBookingData = { ...req.body };
+        if (!newBookingData.stripeSessionId) {
+            delete newBookingData.stripeSessionId;
+        }
+
+        const newBooking = new Booking(newBookingData);
+        const savedBooking = await newBooking.save();
+
+        res.status(200).json({ success: true, message: "Your tour is booked!", data: savedBooking });
+    } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 };
 
+
+
+
 export const getBooking = async (req, res) => {
-    const { id } = req.params; // Could be booking ID or user ID
+    const { id } = req.params;
 
     try {
-        // Check if the provided ID belongs to a user (fetch all bookings of that user)
         const userBookings = await Booking.find({ userId: id });
 
         if (userBookings.length > 0) {
@@ -27,7 +85,6 @@ export const getBooking = async (req, res) => {
             });
         }
 
-        // If no user bookings found, check if the ID is a booking ID
         const singleBooking = await Booking.findById(id);
         if (singleBooking) {
             return res.status(200).json({

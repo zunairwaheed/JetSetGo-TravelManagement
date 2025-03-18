@@ -2,6 +2,33 @@ import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
+export const protect = async (req, res, next) => {
+    console.log("Cookies Received:", req.cookies);  // ✅ Check received cookies
+
+    let token = req.cookies.accessToken;
+    console.log("Extracted Token:", token);  // ✅ Check if token is extracted
+
+    if (!token) {
+        console.log("❌ No token found in cookies!");
+        return res.status(401).json({ message: "Not authorized, no token" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        console.log("Decoded Token:", decoded);  // ✅ Verify token is decoded
+
+        req.user = await User.findById(decoded.id).select("-password");
+        console.log("User Authenticated:", req.user);  // ✅ Verify user is found
+
+        next();
+    } catch (error) {
+        console.error("❌ JWT Verification Failed:", error);
+        return res.status(401).json({ message: "Not authorized, invalid token" });
+    }
+};
+
+
+
 export const signup = async (req, res) => {
     try {
         const { username, email, password, confirmPassword } = req.body;
@@ -60,7 +87,6 @@ export const login = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Login successful",
-            data: userData,  // Removed token from response
             token,
             data: userData,
             role: user.role,

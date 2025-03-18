@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../context/AuthSlice.jsx";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const dispatch = useDispatch();

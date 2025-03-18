@@ -7,6 +7,9 @@ import galleryRoute from './gallery.js';
 import testimonialRoute from './testimonials.js';
 import newsletterRoute from './newsletter.js'
 import paymentRoute from './payment.js'
+import { protect } from '../controllers/authController.js';
+
+
 
 const router = express.Router();
 
@@ -18,5 +21,6 @@ router.use('/gallery', galleryRoute);
 router.use('/newsletter', newsletterRoute);
 router.use('/testimonials', testimonialRoute);
 router.use("/payments", paymentRoute);
+
 
 export default router;

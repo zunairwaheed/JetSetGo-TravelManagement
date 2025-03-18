@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { FaAlignJustify } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaPlaneDeparture } from "react-icons/fa6";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../context/AuthSlice.jsx";
 import { RiAdminLine } from "react-icons/ri";
 import { FaUserPlus } from "react-icons/fa";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import logo from "../../assets/logo.png"
 
 const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
+
+    const handleAdminClick = (e) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (user?.role !== "admin") {
+            e.preventDefault();
+            toast.error("Unauthorized Access");
+        } else {
+            navigate("/admin");
+        }
+    };
+
 
     const Logout = () => {
         dispatch(logout());
@@ -36,23 +46,24 @@ const Header = () => {
                         <button onClick={toggleMenu}>
                             <FaAlignJustify color="#FA7436" className='md:hidden' />
                         </button>
-                        {/* <p className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold">
-                            Jet<span className='text-main'>Set</span>Go
-                        </p> */}
-                        {/* <FaPlaneDeparture className='hidden md:block' color="#FA7436" size="30px" /> */}
                         <img className='w-14 md:w-20 lg:w-24' src={logo} alt="" />
                     </div>
 
-                    <div className='hidden md:block space-x-2'>
-                        <NavLink to="/" className={({ isActive }) =>
-                            `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
-                            } active:bg-black transition-all duration-300 ease-in-out`}>Home</NavLink>
+                    <div className='hidden md:block space-x-2   '>
+                        <NavLink to="/"
+                            className={({ isActive }) =>
+                                `hover:bg-gray-200  cursor-pointer p-2 rounded ${isActive ? "underline decoration-2 decoration-main" : ""} transition-all duration-300 ease-in-out`
+                            }>Home
+                        </NavLink>
+
                         <NavLink to="/about" className={({ isActive }) =>
-                            `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
-                            } active:bg-black transition-all duration-300 ease-in-out`}>About</NavLink>
+                            `hover:bg-gray-200 cursor-pointer p-2 rounded ${isActive ? "underline decoration-2 decoration-main" : ""} transition-all duration-300 ease-in-out`
+                        }>About
+                        </NavLink>
                         <NavLink to="/tours" className={({ isActive }) =>
-                            `hover:bg-main hover:text-white cursor-pointer p-2 rounded ${isActive ? "bg-gray-200" : ""
-                            } active:bg-black transition-all duration-300 ease-in-out`}>Tour</NavLink>
+                            `hover:bg-gray-200 cursor-pointer p-2 rounded ${isActive ? "underline decoration-2 decoration-main" : ""} transition-all duration-300 ease-in-out`
+                        }>Tour
+                        </NavLink>
                     </div>
 
                     {/* Mobile Menu Bar */}
@@ -61,9 +72,11 @@ const Header = () => {
 
                         <div className="relative flex justify-center">
                             <div className='transition-all bg-white w-full text-center md:hidden absolute left-32'>
-                                <NavLink onClick={handleMenu} to="/settings">
-                                    <button><IoSettingsSharp className='text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl' /></button>
-                                </NavLink>
+                                {
+                                    user ? <NavLink onClick={handleMenu} to="/settings">
+                                        <button><IoSettingsSharp className='text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl' /></button>
+                                    </NavLink> : ""
+                                }
                             </div>
                             <ul id="mobile-menu" className="transition-all bg-white w-full text-center md:hidden flex flex-col absolute top-5">
                                 <NavLink to="/" onClick={handleMenu} className="hover:bg-main hover:text-white cursor-pointer p-2 rounded">Home</NavLink>
@@ -77,7 +90,7 @@ const Header = () => {
                         {
                             user ? (
                                 <>
-                                    <div className='flex gap-1 items-center'>
+                                    <div className='flex gap-3 items-center'>
                                         {/* <div className='w-10 h-10 rounded-full bg-red-700'>
                                             <img
                                                 className="w-full h-full object-cover"
@@ -86,21 +99,26 @@ const Header = () => {
                                                 onError={(e) => e.target.src = "/images/login.jpeg"} // Fallback for broken images
                                             />
                                         </div> */}
-                                        <div className='hidden md:block text-center bg-slate-200 text-xs md:text-sm p-1 rounded'>
+                                        <div className='hidden md:block text-center text-xs md:text-sm p-1 rounded'>
                                             <h5 className='font-semibold'>{user.username}</h5>
                                         </div>
-                                        <div className='flex justify-end mt-2'>
-                                            <NavLink to="/admin">
-                                                <button className='text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl'>
+                                        {user?.role === "admin" && (
+                                            <div className='flex justify-end mt-1'>
+                                                <button
+                                                    onClick={handleAdminClick}
+                                                    className='text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl'
+                                                >
                                                     <RiAdminLine />
                                                 </button>
-                                            </NavLink>
-                                        </div>
-                                        <div className='justify-end mt-2 hidden md:block'>
-                                            <NavLink to="/settings">
+                                            </div>
+                                        )}
+
+                                        <div className=' justify-end mt-2 hidden md:block'>
+                                            <NavLink to={`/settings`}>
                                                 <button><IoSettingsSharp className='text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl' /></button>
                                             </NavLink>
                                         </div>
+
                                         <div>
                                             <button className='bg-main hover:bg-[#FEDCCC] active:text-black hover:text-main w-13 md:w-16 lg:w-20 text-xs md:text-sm p-1 text-white font-semibold rounded transition-all duration-300 ease-in-out ' onClick={Logout}>Logout</button>
                                         </div>
