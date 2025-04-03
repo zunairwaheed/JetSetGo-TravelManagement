@@ -11,6 +11,15 @@ const TourCards = () => {
     // Fetch tours based on the current page
     const { data: tours, loading, error } = useFetch(`${BASE_URL}/tours?page=${page}&limit=${limit}`);
     const { data: tourCount } = useFetch(`${BASE_URL}/tours/search/getTourCount`);
+    const formatDate = (dateString) => {
+        if (!dateString) return ""; 
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+    };
+    
 
     // Update page count when tourCount changes
     useEffect(() => {
@@ -49,6 +58,7 @@ const TourCards = () => {
                         cprice={item.price}
                         cBook={item.book}
                         cfeatured={item.featured}
+                        cdate={formatDate(item.date)} 
                     />
                 ))}
             </div>

@@ -41,7 +41,7 @@ const Header = () => {
     return (
         <>
             <header>
-                <div className="mt-10 mx-10 md:mx-20 lg:mx-36 xl:mx-[280px] flex items-center justify-between sticky top-0">
+                <div className="mt-10 mx-10 md:mx-10 lg:mx-36 xl:mx-12 flex items-center justify-between sticky top-0">
                     <div className="flex items-center gap-2">
                         <button onClick={toggleMenu}>
                             <FaAlignJustify color="#FA7436" className='md:hidden' />
@@ -90,7 +90,7 @@ const Header = () => {
                         {
                             user ? (
                                 <>
-                                    <div className='flex gap-3 items-center'>
+                                    <div className='flex gap-3 lg:gap-5 items-center'>
                                         {/* <div className='w-10 h-10 rounded-full bg-red-700'>
                                             <img
                                                 className="w-full h-full object-cover"
@@ -100,7 +100,7 @@ const Header = () => {
                                             />
                                         </div> */}
                                         <div className='hidden md:block text-center text-xs md:text-sm p-1 rounded'>
-                                            <h5 className='font-semibold'>{user.username}</h5>
+                                            <h5 className='font-semibold'>{user.username.toUpperCase()}</h5>
                                         </div>
                                         {user?.role === "admin" && (
                                             <div className='flex justify-end mt-1'>
@@ -120,7 +120,7 @@ const Header = () => {
                                         </div>
 
                                         <div>
-                                            <button className='bg-main hover:bg-[#FEDCCC] active:text-black hover:text-main w-13 md:w-16 lg:w-20 text-xs md:text-sm p-1 text-white font-semibold rounded transition-all duration-300 ease-in-out ' onClick={Logout}>Logout</button>
+                                            <button className='bg-main hover:bg-[#FEDCCC] active:text-black hover:text-main w-13 md:w-16 lg:w-20 text-xs md:text-sm p-2 text-white font-semibold rounded transition-all duration-300 ease-in-out ' onClick={Logout}>Logout</button>
                                         </div>
                                     </div>
                                 </>
@@ -132,7 +132,7 @@ const Header = () => {
                                             Login
                                         </button>
                                     </NavLink> */}
-                                    <NavLink to="/signup">
+                                    <NavLink to="/login">
                                         <button
                                             className="text-main hover:text-[#FEDCCC] active:text-black transition-all duration-300 ease-in-out text-base md:text-xl">
                                             <FaUserPlus />

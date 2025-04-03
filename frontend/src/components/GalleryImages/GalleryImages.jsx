@@ -121,7 +121,7 @@ const GalleryImages = () => {
                                     <img
                                         src={image.imgUrl}
                                         alt={image.title || "Gallery Image"}
-                                        className="w-full h-auto object-cover rounded-lg shadow-md hover:scale-110 duration-300"
+                                        className="w-full h-auto object-cover rounded-lg shadow-md"
                                     />
                                 </div>
                             ))}

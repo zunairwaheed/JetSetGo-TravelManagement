@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
-import { FaBox, FaCog, FaShoppingCart, FaUsers } from 'react-icons/fa';
+import { FaBox, FaShoppingCart, FaUsers } from 'react-icons/fa';
 import { BASE_URL } from '../../utils/config';
 import { dataLineTemplate, dataBarTemplate } from '../../assets/chartData.jsx';
 import { Line, Bar } from 'react-chartjs-2';
@@ -32,7 +32,7 @@ const Dashboard = () => {
                     datasets: [
                         {
                             ...dataLine.datasets[0],
-                            data: [updatedCounts.users, updatedCounts.bookings, updatedCounts.tours],
+                            data: [updatedCounts.users, updatedCounts.bookings, updatedCounts.tours ],
                         },
                     ],
                 });

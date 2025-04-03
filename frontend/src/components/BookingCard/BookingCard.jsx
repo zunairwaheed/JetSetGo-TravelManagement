@@ -18,21 +18,18 @@ const BookingCard = () => {
 
 
     const { user } = useSelector((state) => state.auth);
-    const { data: tour, loading, error } = useFetch(`${BASE_URL}/tours/${id}`);
+    const { data: tour, loading, error, refetch } = useFetch(`${BASE_URL}/tours/${id}`);
     const { loading: bookingLoading, success: bookingSuccess, error: bookingError } = useSelector((state) => state.booking);
 
-    const { imgUrl, city, country, rating, price, charges, desc } = tour || {};
+    const { imgUrl, city, country, rating, price, charges, desc, maxGroupSize } = tour || {};
 
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm({
-        defaultValues: {
-            guest: 1,
-        },
-    });
+        getValues
+    } = useForm();
 
 
     const total = price * (watch("guest") || 1) + charges;
@@ -43,6 +40,13 @@ const BookingCard = () => {
             return;
         }
 
+        const seatsToBook = Number(data.guest);
+
+        if (seatsToBook > maxGroupSize) {
+            toast.error("Not enough seats available.");
+            return;
+        }
+
         const bookingData = {
             userId: user._id,
             image: imgUrl,
@@ -50,22 +54,27 @@ const BookingCard = () => {
             tourName: city,
             userName: user.username,
             guestSize: Number(data.guest),
-            price: price,
+            price: total,
             phone: data.phone,
-            bookingAt: new Date(data.bookingDate).toISOString(),
+            bookingFrom: new Date(data.dateFrom).toISOString(), // Correctly format dateFrom
+            // bookingTo: new Date(data.dateTo).toISOString(), // Correctly format dateTo
+            tourId: id,
         };
 
         console.log("Dispatching booking:", bookingData);
         dispatch(createBooking(bookingData));
     };
 
+
     useEffect(() => {
         if (bookingSuccess) {
             toast.success("Booking successful!");
             dispatch(resetBookingState());
             navigate("/thankyou");
+
+            refetch();
         }
-    }, [bookingSuccess, dispatch, navigate]);
+    }, [bookingSuccess, dispatch, navigate, id])
 
 
     useEffect(() => {
@@ -92,7 +101,7 @@ const BookingCard = () => {
                                     <FaStar className="text-yellow-500" />
                                     <span>{rating} (1)</span>
                                 </div>
-                                <p className="text-gray-600 mt-3">{country} • ${price} / per person • {watch("guest") || 1} people</p>
+                                <p className="text-gray-600 mt-3">{country} • ${price} / per person • {watch("guest") || 1} people •  {maxGroupSize} seats available</p>
                                 <h3 className="mt-5 text-lg font-semibold">Description</h3>
                                 <p className="text-gray-600">{desc}</p>
                             </div>
@@ -115,45 +124,78 @@ const BookingCard = () => {
                             {/* Booking Form */}
                             <form className="space-y-3 mt-3" onSubmit={handleSubmit(onSubmit)}>
                                 {/* Phone Field */}
-                                <input
-                                    type="tel"
-                                    {...register("phone", {
-                                        required: "Phone number is required",
-                                        pattern: {
-                                            value: /^03[0-9]{9}$/,
-                                            message: "Invalid phone format (e.g., 0324XXXXX93)",
-                                        }
-                                    })}
-                                    placeholder="Phone (e.g., 0300XXXXX93)"
-                                    className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-sm"
-                                />
+                                <div>
+                                    <h1>Phone:</h1>
+                                    <input
+                                        type="tel"
+                                        {...register("phone", {
+                                            required: "Phone number is required",
+                                            pattern: {
+                                                value: /^03[0-9]{9}$/,
+                                                message: "Invalid phone format (e.g., 0324XXXXX93)",
+                                            }
+                                        })}
+                                        placeholder="Phone (e.g., 0300XXXXX93)"
+                                        className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-sm"
+                                    />
 
-                                {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
+                                    {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
+                                </div>
 
-                                {/* Booking Date Field */}
+                                {/* Date From Field */}
                                 <div className="relative">
+                                    <h1>Date:</h1>
                                     <input
                                         type="date"
-                                        {...register("bookingDate", { required: "Booking date is required" })}
+                                        {...register("dateFrom", {
+                                            required: "Start date is required",
+                                            validate: value => new Date(value) >= new Date(Date.now() + 86400000) || "Start date must be tomorrow or later", // Ensures the date is valid
+                                        })}
                                         className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-gray-500 text-sm"
+                                        min={new Date(Date.now() + 86400000).toISOString().split("T")[0]} // Set min date to tomorrow
                                     />
                                 </div>
-                                {errors.bookingDate && <p className="text-red-500">{errors.bookingDate.message}</p>}
+                                {errors.dateFrom && <p className="text-red-500">{errors.dateFrom.message}</p>}
+
+                                {/* Date To Field
+                                <div className="relative">
+                                    <h1>To:</h1>
+                                    <input
+                                        type="date"
+                                        {...register("dateTo", {
+                                            required: "End date is required",
+                                            validate: value => new Date(value) > new Date(getValues("dateFrom")) || "End date must be later than start date", // Ensures end date is later than start date
+                                        })}
+                                        className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-gray-500 text-sm"
+                                        min={new Date(Date.now() + 86400000).toISOString().split("T")[0]} // Set min date to tomorrow
+                                    />
+                                </div>
+                                {errors.dateTo && <p className="text-red-500">{errors.dateTo.message}</p>} */}
+
 
                                 {/* Guest Field */}
-                                <input
-                                    type="number"
-                                    {...register("guest", {
-                                        required: "Guest count is required",
-                                        min: {
-                                            value: 1,
-                                            message: "At least 1 guest is required",
-                                        },
-                                    })}
-                                    placeholder="Guest"
-                                    className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-sm"
-                                />
-                                {errors.guest && <p className="text-red-500">{errors.guest.message}</p>}
+                                <div>
+                                    <h1>People:</h1>
+                                    <input
+                                        type="number"
+                                        {...register("guest", {
+                                            required: "Guest count is required",
+                                            min: {
+                                                value: 1,
+                                                message: "At least 1 guest is required",
+                                            },
+                                            valueAsNumber: true, // Ensures value is treated as a number
+                                        })}
+                                        placeholder="Guest"
+                                        className="w-full border p-2 rounded-md outline-none focus:ring-2 focus:ring-main text-sm"
+                                        min="1" // Prevents negative numbers
+                                    // onKeyDown={(e) => e.key === "-" && e.preventDefault()} // Disables negative input
+                                    />
+                                    {errors.guest && <p className="text-red-500">{errors.guest.message}</p>}
+                                </div>
+
+
+
 
                                 {/* Price Summary */}
                                 <div className="border-t mt-4 pt-4 space-y-2 text-gray-700">

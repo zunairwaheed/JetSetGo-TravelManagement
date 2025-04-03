@@ -1,4 +1,5 @@
 import Booking from "../models/Bookings.js";
+import Tour from "../models/Tour.js";
 
 export const updateBookingStatus = async (req, res) => {
     try {
@@ -40,34 +41,45 @@ export const deleteUser = async (req, res) => {
     }
 };
 
-// export const createBooking = async (req, res) => {
-//     const newBooking = new Booking(req.body);
-
-//     try {
-//         const savedBooking = await newBooking.save();
-//         res.status(200).json({ success: true, message: "Your tour is Booked", data: savedBooking });
-//     } catch (err) {
-//         console.error("Booking Creation Error:", err);
-//         res.status(500).json({ success: false, message: err.message });
-//     }
-// };
-
+// // Validate the date range
+// if (new Date(dateFrom) >= new Date(dateTo)) {
+//     return res.status(400).json({ success: false, message: "Invalid date range. 'From' date must be earlier than 'To' date." });
+// }
 export const createBooking = async (req, res) => {
     try {
+        const { tourId, guestSize, dateFrom, dateTo } = req.body;
+        
+
+        // Find the tour
+        const tour = await Tour.findById(tourId);
+        if (!tour) {
+            return res.status(404).json({ success: false, message: "Tour not found" });
+        }
+
+        // Check if there are enough available seats
+        if (tour.maxGroupSize < guestSize) {
+            return res.status(400).json({ success: false, message: "Not enough available seats" });
+        }
+
+        // Prepare booking data
         const newBookingData = { ...req.body };
         if (!newBookingData.stripeSessionId) {
             delete newBookingData.stripeSessionId;
         }
 
+        // Create new booking
         const newBooking = new Booking(newBookingData);
         const savedBooking = await newBooking.save();
+
+        // Decrease available seats
+        tour.maxGroupSize -= guestSize;
+        await tour.save();
 
         res.status(200).json({ success: true, message: "Your tour is booked!", data: savedBooking });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 };
-
 
 
 

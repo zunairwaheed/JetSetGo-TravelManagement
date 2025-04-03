@@ -30,10 +30,14 @@ const bookingsSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        bookingAt: {
+        bookingFrom: {
             type: Date,
             required: true,
-        },
+        },        
+        // bookingTo: {
+        //     type: Date,
+        //     required: true,
+        // },
         stripeSessionId: { 
             type: String, 
             unique: true, 

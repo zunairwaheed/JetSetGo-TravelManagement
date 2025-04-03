@@ -4,10 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import DeleteModal from "../Common/DeleteModal.jsx";
 import { FiUser, FiBook, FiTrash, FiEdit, FiDollarSign, FiLock } from "react-icons/fi";
-import { IoHome } from "react-icons/io5";
-import { MdTour } from "react-icons/md";
 import { FaUserCheck } from "react-icons/fa";
-import { RiGalleryFill } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
 import ChangePassword from "../../pages/changePassword.jsx";
 
@@ -22,6 +19,12 @@ const Settings = () => {
     const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
     const [bookingToDelete, setBookingToDelete] = useState(null);
     const [accountToDelete, setAccountToDelete] = useState(null);
+    const [bookingsPerPage, setBookingsPerPage] = useState(8);
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(bookings.length / bookingsPerPage);
+    const indexOfLastBooking = currentPage * bookingsPerPage;
+    const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+    const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const userId = storedUser?._id;
@@ -111,7 +114,7 @@ const Settings = () => {
         } finally {
             setLoading(false);
             window.location.reload()
-            setIsBookingAccountModalOpen(false);
+            setIsAccountDeleteModalOpen(false);
         }
     };
 
@@ -152,8 +155,21 @@ const Settings = () => {
         }
     };
 
+    useEffect(() => {
+        const updateBookingsPerPage = () => {
+            if (window.innerWidth < 640) setBookingsPerPage(4);
+            else if (window.innerWidth < 1024) setBookingsPerPage(6);
+            else setBookingsPerPage(8);
+        };
+
+        updateBookingsPerPage();
+        window.addEventListener("resize", updateBookingsPerPage);
+        return () => window.removeEventListener("resize", updateBookingsPerPage);
+    }, []);
+
+
     return (
-        <div className="flex h-screen my-10">
+        <div className="flex min-h-screen my-10">
             {/* Sidebar */}
             <div className="w-64 bg-gray-800 text-white p-6 hidden md:block">
                 <h2 className="text-2xl font-bold mb-6">Settings</h2>
@@ -200,38 +216,70 @@ const Settings = () => {
                     </form>
                 )}
 
-                {activeTab === "bookings" && (
-                    <div className="bg-white p-6 shadow-md rounded">
-                        <h3 className="text-xl font-bold">My Bookings</h3>
 
-                        {bookings.length > 0 ? (
-                            <ul>
-                                {bookings.map((booking) => (
-                                    <li key={booking._id} className="p-4 border-b">
-                                        <div>
-                                            <p><strong>Tour:</strong> {booking.tourName}</p>
-                                            <p><strong>Contact:</strong> {booking.phone}</p>
-                                            <p><strong>People:</strong> {booking.guestSize}</p>
-                                            <p><strong>Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}</p>
-                                            <p><strong>Status:</strong> {booking.status}</p>
-                                        </div>
-                                        <div className="flex gap-2 pt-2">
-                                            <button onClick={() => handlePayNow(booking)} className="flex items-center bg-green-500 text-white p-2 rounded">
-                                                <div><FiDollarSign /></div>
-                                                <div>PayNow</div>
-                                            </button>
-                                            <button onClick={() => { setBookingToDelete(booking._id); setIsBookingDeleteModalOpen(true); }} className="bg-red-500 text-white p-2 rounded">
-                                                <FiTrash />
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500 text-center mt-4">No bookings found.</p>
-                        )}
+                {activeTab === "bookings" && (
+                    <div>
+                        <h3 className="text-xl font-bold pb-2">My Bookings</h3>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+                            {currentBookings.map((booking) => (
+                                <div key={booking._id} className="p-4 border rounded-lg shadow-sm bg-gray-50">
+                                    <p><strong>Tour:</strong> {booking.tourName}</p>
+                                    <p><strong>Contact:</strong> {booking.phone}</p>
+                                    <p><strong>People:</strong> {booking.guestSize}</p>
+                                    <p><strong>Price:</strong> {booking.price} $</p>
+                                    <p><strong>Date From:</strong> {new Date(booking.bookingFrom).toLocaleDateString()}</p>
+                                    {/* <p><strong>Date To:</strong> {new Date(booking.bookingTo).toLocaleDateString()}</p> */}
+                                    <p><strong>Status:</strong>
+                                        <span className={`font-semibold ${booking.status === "pending" ? "text-red-500" : "text-green-500"} pl-1`}>
+                                            {booking.status}
+                                        </span>
+                                    </p>
+                                    <div className="flex gap-2 pt-3">
+                                        <button
+                                            onClick={() => handlePayNow(booking)}
+                                            disabled={booking.status === "paid"}
+                                            className={`flex items-center p-2 rounded ${booking.status === "paid"
+                                                ? "bg-gray-400 cursor-not-allowed"
+                                                : "bg-green-500 text-white"
+                                                }`}
+                                        >
+                                            <FiDollarSign />
+                                            <span className="ml-1">Pay Now</span>
+                                        </button>
+                                        <button
+                                            onClick={() => { setBookingToDelete(booking._id); setIsBookingDeleteModalOpen(true); }}
+                                            className="bg-red-500 text-white p-2 rounded"
+                                        >
+                                            <FiTrash />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Pagination Buttons */}
+                        <div className="flex justify-center mt-4">
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
+                            >
+                                Prev
+                            </button>
+                            <span className="px-4 py-2 text-black">{`Page ${currentPage} of ${totalPages}`}</span>
+                            <button
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                 )}
+
+
 
                 {activeTab === "change-password" && <ChangePassword />}
 
@@ -259,10 +307,11 @@ const Settings = () => {
             <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white flex justify-around p-3 md:hidden">
                 <Link className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "profile" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("profile")}><FaUserCheck /></Link>
                 <Link className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "bookings" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("bookings")}><SlCalender /></Link>
+                <Link className={`p-3 cursor-pointer flex items-center gap-2 ${activeTab === "change-password" ? "bg-gray-700" : "hover:bg-gray-700"}`} onClick={() => setActiveTab("change-password")}><FiLock /></Link>
                 <Link className="p-3 cursor-pointer flex items-center gap-2 hover:bg-red-600 text-red-300"
                     onClick={() => {
-                        setAccountToDelete(userId); // Set userId before opening modal
-                        setIsDeleteModalOpen(true);
+                        setAccountToDelete(userId);
+                        setIsAccountDeleteModalOpen(true);
                     }}><FiTrash /></Link>
             </div>
         </div>

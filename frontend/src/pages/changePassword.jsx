@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/config";
+import { BiSolidShow } from "react-icons/bi";
+import { BiSolidHide } from "react-icons/bi";
 
 const ChangePassword = () => {
     const [oldPassword, setOldPassword] = useState("");
@@ -77,6 +79,7 @@ const ChangePassword = () => {
 
                 {/* Old Password Field */}
                 <div className="relative">
+                    <label className="font font-semibold">Old Password</label>
                     <input
                         type={showOldPassword ? "text" : "password"}
                         placeholder="Old Password"
@@ -88,14 +91,15 @@ const ChangePassword = () => {
                     <button
                         type="button"
                         onClick={() => setShowOldPassword(!showOldPassword)}
-                        className="absolute right-2 top-2 bg-transparent border-none cursor-pointer"
+                        className="absolute right-2 top-9 bg-transparent border-none cursor-pointer"
                     >
-                        {showOldPassword ? "🚫" : "👁️"}
+                        {showOldPassword ? <BiSolidHide /> : <BiSolidShow />}
                     </button>
                 </div>
 
                 {/* New Password Field */}
                 <div className="relative">
+                <label className="font font-semibold">New Password</label>
                     <input
                         type={showNewPassword ? "text" : "password"}
                         placeholder="New Password"
@@ -107,14 +111,15 @@ const ChangePassword = () => {
                     <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-2 top-2 bg-transparent border-none cursor-pointer"
+                        className="absolute right-2 top-9 bg-transparent border-none cursor-pointer"
                     >
-                        {showNewPassword ? "🚫" : "👁️"}
+                        {showNewPassword ? <BiSolidHide /> : <BiSolidShow />}
                     </button>
                 </div>
 
                 {/* Confirm Password Field */}
                 <div className="relative">
+                <label className="font font-semibold">Confirm Password</label>
                     <input
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm Password"
@@ -126,15 +131,15 @@ const ChangePassword = () => {
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-2 top-2 bg-transparent border-none cursor-pointer"
+                        className="absolute right-2 top-9 bg-transparent border-none cursor-pointer"
                     >
-                        {showConfirmPassword ? "🚫" : "👁️"}
+                        {showConfirmPassword ? <BiSolidHide /> : <BiSolidShow />}
                     </button>
                 </div>
 
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600"
+                    className="bg-main text-white p-2 rounded w-full hover:bg-[#fa6036]"
                     disabled={loading}
                 >
                     {loading ? "Updating..." : "Change Password"}

@@ -123,7 +123,7 @@ function TourManagement() {
                     <input type="number" name="rating" value={formData.rating} onChange={handleChange} placeholder="Rating" className="w-full p-2 border rounded" />
                     <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Price" className="w-full p-2 border rounded" />
                     <input type="number" name="charges" value={formData.charges} onChange={handleChange} placeholder="Charges" className="w-full p-2 border rounded" />
-                    <input type="number" name="maxGroupSize" value={formData.maxGroupSize} onChange={handleChange} placeholder="Max Group Size" className="w-full p-2 border rounded" />
+                    <input type="number" name="maxGroupSize" value={formData.maxGroupSize} onChange={handleChange} placeholder="Available Seats" className="w-full p-2 border rounded" />
                     <textarea name="desc" value={formData.desc} onChange={handleChange} placeholder="Description" className="w-full p-2 border rounded" />
                     <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border rounded" />
 

@@ -38,10 +38,6 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    book: {
-        type: String,
-        default: "BOOK Now",
-    },
     date: {
         type: Date,
         required: true

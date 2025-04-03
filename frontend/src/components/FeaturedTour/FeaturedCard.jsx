@@ -14,6 +14,14 @@ const FeaturedCard = () => {
   );
 
   const navigate = useNavigate();
+  const formatDate = (dateString) => {
+    if (!dateString) return ""; 
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+};
 
   const handleBookingClick = (_id, city) => {
     navigate(`/tour/${_id}/${city}`);
@@ -94,7 +102,7 @@ const FeaturedCard = () => {
           error && <h4>{error}</h4>
         }
 
-        <div>
+        <div >
           <Slider {...settings} ref={sliderRef}>
             {!loading && !error && featuredTours.filter((item) => item.featured).map((item) => (
               <Card
@@ -107,6 +115,7 @@ const FeaturedCard = () => {
                 cprice={item.price}
                 cBook={item.book}
                 cfeatured={item.featured}
+                cdate={formatDate(item.date)} 
               />
             ))}
           </Slider>

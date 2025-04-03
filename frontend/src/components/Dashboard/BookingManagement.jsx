@@ -12,6 +12,12 @@ const BookingManagement = () => {
     const [showAllBookings, setShowAllBookings] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const bookingsPerPage = 6;
+    const totalPages = Math.ceil(bookings.length / bookingsPerPage);
+    const indexOfLastBooking = currentPage * bookingsPerPage;
+    const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+    const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
 
     const fetchAllBookings = async () => {
         if (showAllBookings) {
@@ -137,17 +143,24 @@ const BookingManagement = () => {
                 {showAllBookings ? "Hide All Bookings" : "View All Bookings"}
             </button>
 
-            {bookings.length > 0 && (
+            {currentBookings.length > 0 && (
                 <div className="mt-4 p-4 bg-gray-100 rounded">
                     <h2 className="text-xl font-semibold mb-2">Bookings</h2>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {bookings.map((booking) => (
+                        {currentBookings.map((booking) => (
                             <li key={booking._id} className="p-4 bg-white shadow-md rounded">
                                 <p><strong>Tour:</strong> {booking.tourName}</p>
-                                <p><strong>User:</strong> {booking.userName} ({booking.userEmail})</p>
-                                <p><strong>Guests:</strong> {booking.guestSize} | <strong>Phone:</strong> {booking.phone}</p>
-                                <p><strong>Booking Date:</strong> {new Date(booking.bookingAt).toLocaleDateString()}</p>
-                                <p><strong>Status:</strong> {booking.status}</p>
+                                <p><strong>User:</strong> {booking.userName} </p>
+                                <p className="text-xs md:text-sm lg:text-base"> ({booking.userEmail}) </p>
+                                <p><strong>Guests:</strong> {booking.guestSize} </p>
+                                <p><strong>Phone:</strong> {booking.phone} </p>
+                                <p><strong>From:</strong> {new Date(booking.bookingFrom).toLocaleDateString()}</p>
+                                {/* <p><strong>To:</strong> {new Date(booking.bookingTo).toLocaleDateString()}</p> */}
+                                <p><strong>Status:</strong>
+                                        <span className={`font-semibold ${booking.status === "pending" ? "text-red-500" : "text-green-500"} pl-1`}>
+                                            {booking.status}
+                                        </span>
+                                    </p>
                                 <button
                                     onClick={() => handleDeleteClick(booking)}
                                     className="mt-2 bg-red-500 text-white p-1 rounded hover:bg-red-600 w-full"
@@ -157,6 +170,27 @@ const BookingManagement = () => {
                             </li>
                         ))}
                     </ul>
+                </div>
+            )}
+
+            {/* Pagination Buttons */}
+            {bookings.length > 0 && (
+                <div className="flex justify-center mt-4">
+                    <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
+                    >
+                        Prev
+                    </button>
+                    <span className="px-4 py-2 text-black">{`Page ${currentPage} of ${totalPages}`}</span>
+                    <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
+                    >
+                        Next
+                    </button>
                 </div>
             )}
 
