@@ -64,21 +64,21 @@ const TourCards = () => {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex justify-center gap-4 py-4">
+            <div className="flex justify-center mt-4 text-sm font-semibold">
                 <button
                     onClick={() => handlePageChange(page - 1)}
                     disabled={page === 0}
-                    className="p-1 bg-main text-white rounded disabled:opacity-50"
+                    className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
                 >
-                    Previous
+                    Prev
                 </button>
 
-                <span className="text-sm flex justify-center items-center">{page + 1} / {pageCount}</span>
+                <span className="px-1 md:px-4 py-2 text-black">Page {page + 1} of {pageCount}</span>
 
                 <button
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page === pageCount - 1}
-                    className="p-1 bg-main text-white rounded disabled:opacity-50"
+                    className="px-4 py-2 bg-main text-white disabled:bg-gray-400 rounded"
                 >
                     Next
                 </button>
