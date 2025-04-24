@@ -6,6 +6,8 @@ import FeaturedCard from '../components/FeaturedTour/FeaturedCard'
 import GalleryImages from '../components/GalleryImages/GalleryImages'
 import Testimonial from '../components/Testimonials/Testimonial'
 import NewsLetter from '../components/NewsLetter/NewsLetter'
+import TrendingTours from '../components/TrendingTours/TrendingTours'
+import SmartSearch from '../components/SmartSearch/SmartSearch'
 
 
 const Home = () => {
@@ -16,6 +18,8 @@ const Home = () => {
       <Services/>
       <FeaturedCard/>
       <GalleryImages/>
+      <TrendingTours/>
+      <SmartSearch/>
       <Testimonial/>
       <NewsLetter/>
     </>

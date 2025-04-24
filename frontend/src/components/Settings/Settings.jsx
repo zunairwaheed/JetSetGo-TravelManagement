@@ -259,7 +259,7 @@ const Settings = () => {
                         </div>
 
                         {/* Pagination Buttons */}
-                        <div className="flex justify-center mt-4">
+                        <div className="flex justify-center mt-4 text-sm font-semibold">
                             <button
                                 onClick={() => setCurrentPage(currentPage - 1)}
                                 disabled={currentPage === 1}
@@ -267,7 +267,7 @@ const Settings = () => {
                             >
                                 Prev
                             </button>
-                            <span className="px-4 py-2 text-black">{`Page ${currentPage} of ${totalPages}`}</span>
+                            <span className="px-1 md:px-4 py-2 text-black">{`Page ${currentPage} of ${totalPages}`}</span>
                             <button
                                 onClick={() => setCurrentPage(currentPage + 1)}
                                 disabled={currentPage === totalPages}

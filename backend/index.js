@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import routes from "./routes/routes.js";
 import path from "path";
 import { v2 as cloudinary } from 'cloudinary';
+import "./cronJobs.js"; 
 
 cloudinary.config({
   cloud_name: 'dvoitkw0q',

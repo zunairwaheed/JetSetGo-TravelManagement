@@ -1,4 +1,5 @@
 import Tour from "../models/Tour.js";
+import Booking from "../models/Bookings.js";
 
 // Create a new Tour
 export const createTour = async (req, res) => {
@@ -175,3 +176,33 @@ export const getTourCount = async (req, res) => {
         });
     }
 }
+
+export const getTrendingTours = async (req, res) => {
+    try {
+      const bookingStats = await Booking.aggregate([
+        {
+          $group: {
+            _id: "$tourName",
+            bookingCount: { $sum: 1 }
+          }
+        },
+        { $sort: { bookingCount: -1 } },
+        { $limit: 3 }
+      ]);
+  
+      const trendingTours = await Promise.all(
+        bookingStats.map(async (item) => {
+          const tour = await Tour.findOne({ city: item._id });
+          return {
+            ...tour._doc,
+            bookingCount: item.bookingCount
+          };
+        })
+      );
+  
+      res.status(200).json(trendingTours);
+    } catch (err) {
+      console.error("Error fetching trending tours:", err);
+      res.status(500).json({ message: "Failed to fetch trending tours" });
+    }
+  };

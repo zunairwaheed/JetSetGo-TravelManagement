@@ -75,7 +75,8 @@ const Testimonial = () => {
                                         <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
                                             <img
                                                 className="w-16 h-16 rounded-full object-cover border-2 border-black shadow-lg"
-                                                src={item.avatar}
+                                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIhCBq-WV5kdxy5e-8fgzaYKejJFYOUnTt1Q&s"
+                                                // src={item.avatar}
                                                 alt={`${item.name}'s avatar`}
                                             />
                                         </div>
@@ -84,7 +85,7 @@ const Testimonial = () => {
                                             <h1 className="font-bold text-base lg:text-lg mt-4">
                                                 {item.name}
                                             </h1>
-                                            <p className="text-gray-500 text-sm lg:text-base">{item.city}</p>
+                                            <p className="text-gray-500 text-sm lg:text-base">{item.city.toUpperCase()}</p>
                                         </div>
                                     </div>
                                 </div>

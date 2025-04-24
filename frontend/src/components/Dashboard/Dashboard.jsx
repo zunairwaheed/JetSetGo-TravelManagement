@@ -76,7 +76,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <div className="grow p-8">
+            <div className="grow p-6">
                 <h2 className="text-2xl font-bold mb-4"><span className="text-main">Dash</span>board</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 h-">
                     {renderCard(<FaShoppingCart className='text-main'/>, 'Bookings', 'bookings')}

@@ -7,6 +7,7 @@ import galleryRoute from './gallery.js';
 import testimonialRoute from './testimonials.js';
 import newsletterRoute from './newsletter.js'
 import paymentRoute from './payment.js'
+import smartSearchRoute from './smartSearch.js'
 import { protect } from '../controllers/authController.js';
 
 
@@ -21,6 +22,7 @@ router.use('/gallery', galleryRoute);
 router.use('/newsletter', newsletterRoute);
 router.use('/testimonials', testimonialRoute);
 router.use("/payments", paymentRoute);
+router.use('/search', smartSearchRoute);
 
 
 export default router;

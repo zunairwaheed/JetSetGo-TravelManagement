@@ -1,6 +1,6 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { IoHome } from "react-icons/io5";
-import { MdTour } from "react-icons/md";
+import { MdOutlineReviews, MdTour } from "react-icons/md";
 import { FaUserCheck } from "react-icons/fa";
 import { RiGalleryFill } from "react-icons/ri";
 import { SlCalender } from "react-icons/sl";
@@ -20,6 +20,7 @@ export default function Sidebar() {
                         <NavLink to="usermanagement" className={({ isActive }) => `block p-3 rounded-lg hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`}>User Management</NavLink>
                         <NavLink to="gallerymanagement" className={({ isActive }) => `block p-3 rounded-lg hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`}>Gallery Management</NavLink>
                         <NavLink to="bookingmanagement" className={({ isActive }) => `block p-3 rounded-lg hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`}>Booking Management</NavLink>
+                        <NavLink to="testimonialmanagement" className={({ isActive }) => `block p-3 rounded-lg hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`}>Testimonials Management</NavLink>
                     </nav>
                 </div>
 
@@ -35,6 +36,7 @@ export default function Sidebar() {
                     <Link to="usermanagement" className="p-2"><FaUserCheck /></Link>
                     <Link to="gallerymanagement" className="p-2"><RiGalleryFill /></Link>
                     <Link to="bookingmanagement" className="p-2"><SlCalender /></Link>
+                    <Link to="testimonialmanagement" className="p-2 "><MdOutlineReviews /></Link>
                 </div>
             </div>
         </>
