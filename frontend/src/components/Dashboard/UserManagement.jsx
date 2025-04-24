@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetch from "../hooks/useFetch.js";
 import toast from "react-hot-toast";
-import DeleteModal from "../Common/DeleteModal"; // Import the modal
+import DeleteModal from "../Common/DeleteModal";
 
 
 const USER_URL = `${BASE_URL}/users`;
@@ -12,7 +12,7 @@ function UserManagement() {
     const { data: users = [], error, loading } = useFetch(USER_URL);
     const [selectedUser, setSelectedUser] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleSelectUser = (id) => {
         setSelectedUser(id);
