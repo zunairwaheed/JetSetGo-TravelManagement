@@ -16,6 +16,7 @@ import GalleryManagement from '../components/Dashboard/GalleryManagement'
 import SidePanel from '../components/Dashboard/SidePanel'
 import Dashboard from '../components/Dashboard/Dashboard'
 import ChangePassword from '../pages/changePassword'
+import TestimonialsManagment from '../components/Dashboard/TestimonialsManagement'
 
 const Routers = () => {
   return (
@@ -37,6 +38,7 @@ const Routers = () => {
         <Route path="usermanagement" element={<UserManagement />} />
         <Route path="bookingmanagement" element={<BookingManagement />} />
         <Route path="gallerymanagement" element={<GalleryManagement />} />
+        <Route path="testimonialmanagement" element={<TestimonialsManagment/>} />
         <Route path="" element={<Dashboard />} />
       </Route>
     </Routes>

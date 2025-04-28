@@ -103,7 +103,7 @@ export const changePassword = async (req, res) => {
 
         if (!oldPassword || !newPassword) {
             return res.status(400).json({ message: "All fields are required" });
-        }
+        }l
 
         const user = await User.findById(userId);
         if (!user) {

@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
 
 const testimonialSchema = new mongoose.Schema({
-    avatar: {
-        type: String,
-        require: true
-    },
+    // avatar: {
+    //     type: String,
+    //     required: true
+    // },
     name: {
         type: String,
-        require: true
+        required: true
     },
     city: {
         type: String,
-        require: true
+        required: true
     },
     testimonial: {
         type: String,
-        require: true
+        required: true
     },
 }, { timestamps: true });
 

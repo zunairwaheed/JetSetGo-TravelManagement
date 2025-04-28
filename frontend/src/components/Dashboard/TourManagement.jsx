@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BASE_URL } from "../../utils/config";
 import useFetchAllTours from "../hooks/useFetchAllTours.js";
 import toast from "react-hot-toast";
-import DeleteModal from "../Common/DeleteModal"; // Import the modal
+import DeleteModal from "../Common/DeleteModal";
 
 const URL = `${BASE_URL}/tours`;
 
@@ -10,7 +10,7 @@ function TourManagement() {
     const { data: tours, error, loading } = useFetchAllTours(URL);
     const [selectedTour, setSelectedTour] = useState("");
     const [showOnlyFeatured, setShowOnlyFeatured] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         imgUrl: "",
@@ -82,9 +82,9 @@ function TourManagement() {
     };
 
     return (
-        <div className="my-5">
-            <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-5">
-                <h1 className="text-xl lg:text-2xl font-bold mb-4">Tour Management</h1>
+        <div className="bg-gray-100 p-6">
+            <h1 className="text-xl lg:text-2xl font-bold mb-4">Tour Management</h1>
+            <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
                 {loading && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-white"></div>
@@ -125,7 +125,15 @@ function TourManagement() {
                     <input type="number" name="charges" value={formData.charges} onChange={handleChange} placeholder="Charges" className="w-full p-2 border rounded" />
                     <input type="number" name="maxGroupSize" value={formData.maxGroupSize} onChange={handleChange} placeholder="Available Seats" className="w-full p-2 border rounded" />
                     <textarea name="desc" value={formData.desc} onChange={handleChange} placeholder="Description" className="w-full p-2 border rounded" />
-                    <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full p-2 border rounded" />
+                    <input
+                        type="date"
+                        name="date"
+                        value={formData.date}
+                        onChange={handleChange}
+                        min={new Date().toISOString().split("T")[0]} // Set today's date as min
+                        className="w-full p-2 border rounded"
+                    />
+
 
                     <label className="flex items-center space-x-2">
                         <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
